@@ -734,6 +734,26 @@ form input {
     color: #333;
 }
 
+/* --- Force 3 Columns on Recipe Grid --- */
+.recipe-collection .card-grid {
+    grid-template-columns: repeat(3, 1fr);
+    max-width: 1200px; /* Prevents the 3 cards from stretching too wide on massive monitors */
+    margin: 0 auto; /* Centers the grid perfectly */
+}
+
+/* Responsive adjustments for tablets and smaller screens */
+@media (max-width: 992px) {
+    .recipe-collection .card-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .recipe-collection .card-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
 
 /* =========================================
    COMMUNITY PAGE STYLES 

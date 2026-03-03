@@ -4,7 +4,10 @@ require_once 'db_connect.php'; // Connect to our database!
 
 // Fetch all curated recipes (where user_id is NULL)
 // We will order them by newest first
-$query = "SELECT * FROM recipes WHERE user_id IS NULL ORDER BY created_at DESC";
+$query = "SELECT recipes.*, users.first_name, users.last_name 
+    FROM recipes 
+    LEFT JOIN users ON recipes.user_id = users.user_id 
+    ORDER BY recipes.created_at DESC";
 $result = $conn->query($query);
 ?>
 <!DOCTYPE html>
