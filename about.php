@@ -88,7 +88,7 @@ session_start();
             <div class="footer-logo">FoodFusion</div>
             <div class="footer-links">
                 <a href="privacy.php">Privacy Policy</a>
-                <a href="#">Terms of Service</a>
+                <a href="terms.php">Terms of Service</a>
                 <a href="contact.php">Contact Us</a>
             </div>
             

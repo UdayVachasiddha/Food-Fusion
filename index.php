@@ -71,10 +71,7 @@ session_start();
     </div>
     <?php endif; ?>
 
-    <div id="cookieConsent" class="cookie-banner">
-        <p>We use cookies to improve your experience. By continuing to visit this site you agree to our <a href="privacy.php">Privacy Policy</a>.</p>
-        <button id="acceptCookies" class="btn outline-btn">Got it!</button>
-    </div>
+   
 
     <section class="news-feed">
         <h2 class="section-title">Culinary Trends & Featured Recipes</h2>
@@ -152,7 +149,7 @@ session_start();
             <div class="footer-logo">FoodFusion</div>
             <div class="footer-links">
                 <a href="privacy.php">Privacy Policy</a>
-                <a href="#">Terms of Service</a>
+                <a href="terms.php">Terms of Service</a>
                 <a href="contact.php">Contact Us</a>
             </div>
            <div class="social-links">
@@ -176,6 +173,16 @@ session_start();
             &copy; <?php echo date("Y"); ?> FoodFusion. All rights reserved.
         </div>
     </footer>
+
+    <div id="cookieConsent" class="cookie-banner" style="display: none;">
+        <div class="cookie-content">
+            <p>We use cookies to improve your experience, serve personalized recipes, and analyze site traffic. By clicking "Accept All", you agree to our use of cookies.</p>
+            <div class="cookie-buttons">
+                <a href="privacy.php" class="cookie-link">Learn More</a>
+                <button id="acceptCookies" class="btn primary-btn">Accept All</button>
+            </div>
+        </div>
+    </div>
 
     <script src="main.js"></script>
 </body>

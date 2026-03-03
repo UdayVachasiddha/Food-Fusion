@@ -1,14 +1,55 @@
 <?php
 session_start();
-require_once 'db_connect.php'; // Connect to our database!
+require_once 'db_connect.php'; 
 
-// Fetch all curated recipes (where user_id is NULL)
-// We will order them by newest first
-$query = "SELECT recipes.*, users.first_name, users.last_name 
-    FROM recipes 
-    LEFT JOIN users ON recipes.user_id = users.user_id 
-    ORDER BY recipes.created_at DESC";
-$result = $conn->query($query);
+// 1. Base query to fetch all recipes
+$query = "SELECT recipes.*, users.first_name, users.last_name FROM recipes LEFT JOIN users ON recipes.user_id = users.user_id";
+
+// 2. Arrays to hold our dynamic filter conditions and parameters
+$conditions = [];
+$params = [];
+$types = "";
+
+// 3. Check if filters were submitted and add them to the query
+if (isset($_GET['cuisine']) && $_GET['cuisine'] !== 'all') {
+    $conditions[] = "cuisine_type = ?";
+    $params[] = $_GET['cuisine'];
+    $types .= "s";
+}
+
+if (isset($_GET['diet']) && $_GET['diet'] !== 'all') {
+    $conditions[] = "dietary_preference = ?";
+    $params[] = $_GET['diet'];
+    $types .= "s";
+}
+
+if (isset($_GET['difficulty']) && $_GET['difficulty'] !== 'all') {
+    $conditions[] = "difficulty_level = ?";
+    $params[] = $_GET['difficulty'];
+    $types .= "s";
+}
+
+// 4. If we have any conditions, append them to the base query with "WHERE" and "AND"
+if (count($conditions) > 0) {
+    $query .= " WHERE " . implode(" AND ", $conditions);
+}
+
+// 5. Always order by newest first at the very end
+$query .= " ORDER BY recipes.created_at DESC";
+
+// 6. Execute securely using prepared statements
+$stmt = $conn->prepare($query);
+if ($types) {
+    // Dynamically bind the parameters if filters were used
+    $stmt->bind_param($types, ...$params);
+}
+$stmt->execute();
+$result = $stmt->get_result();
+
+// Helper function to keep dropdowns selected after page reload
+function isSelected($filterName, $value) {
+    return (isset($_GET[$filterName]) && $_GET[$filterName] === $value) ? 'selected' : '';
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -46,28 +87,37 @@ $result = $conn->query($query);
     </header>
 
     <section class="filter-section">
-        <div class="filter-container">
+        <form method="GET" action="recipes.php" class="filter-container">
             <span><strong>Filter By:</strong></span>
-            <select class="filter-dropdown">
+            
+            <select name="cuisine" class="filter-dropdown">
                 <option value="all">All Cuisines</option>
-                <option value="italian">Italian</option>
-                <option value="thai">Thai</option>
-                <option value="mexican">Mexican</option>
+                <option value="Italian" <?php echo isSelected('cuisine', 'Italian'); ?>>Italian</option>
+                <option value="Thai" <?php echo isSelected('cuisine', 'Thai'); ?>>Thai</option>
+                <option value="Indian" <?php echo isSelected('cuisine', 'Indian'); ?>>Indian</option>
+                <option value="Mexican" <?php echo isSelected('cuisine', 'Mexican'); ?>>Mexican</option>
             </select>
-            <select class="filter-dropdown">
+            
+            <select name="diet" class="filter-dropdown">
                 <option value="all">Any Diet</option>
-                <option value="vegetarian">Vegetarian</option>
-                <option value="vegan">Vegan</option>
-                <option value="gluten-free">Gluten-Free</option>
+                <option value="Vegetarian" <?php echo isSelected('diet', 'Vegetarian'); ?>>Vegetarian</option>
+                <option value="Vegan" <?php echo isSelected('diet', 'Vegan'); ?>>Vegan</option>
+                <option value="High-Protein" <?php echo isSelected('diet', 'High-Protein'); ?>>High-Protein</option>
             </select>
-            <select class="filter-dropdown">
+            
+            <select name="difficulty" class="filter-dropdown">
                 <option value="all">Any Difficulty</option>
-                <option value="easy">Easy</option>
-                <option value="medium">Medium</option>
-                <option value="hard">Hard</option>
+                <option value="Easy" <?php echo isSelected('difficulty', 'Easy'); ?>>Easy</option>
+                <option value="Medium" <?php echo isSelected('difficulty', 'Medium'); ?>>Medium</option>
+                <option value="Hard" <?php echo isSelected('difficulty', 'Hard'); ?>>Hard</option>
             </select>
-            <button class="btn primary-btn">Apply Filters</button>
-        </div>
+            
+            <button type="submit" class="btn primary-btn" style="padding: 8px 20px;">Apply Filters</button>
+            
+            <?php if(isset($_GET['cuisine']) || isset($_GET['diet']) || isset($_GET['difficulty'])): ?>
+                <a href="recipes.php" class="btn outline-btn" style="padding: 8px 15px; text-decoration: none;">Clear</a>
+            <?php endif; ?>
+        </form>
     </section>
 
     <section class="recipe-collection">
@@ -104,6 +154,36 @@ $result = $conn->query($query);
 
         </div>
     </section>
+
+    <footer class="site-footer">
+        <div class="footer-content">
+            <div class="footer-logo">FoodFusion</div>
+            <div class="footer-links">
+                <a href="privacy.php">Privacy Policy</a>
+                <a href="terms.php">Terms of Service</a>
+                <a href="contact.php">Contact Us</a>
+            </div>
+           <div class="social-links">
+                <a href="https://facebook.com" target="_blank" class="social-item" aria-label="Facebook">
+                    <span class="social-name">Facebook</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+                </a>
+                
+                <a href="https://instagram.com" target="_blank" class="social-item" aria-label="Instagram">
+                    <span class="social-name">Instagram</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                </a>
+                
+                <a href="https://twitter.com" target="_blank" class="social-item" aria-label="Twitter">
+                    <span class="social-name">Twitter</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg>
+                </a>
+            </div>
+        </div>
+        <div class="copyright">
+            &copy; <?php echo date("Y"); ?> FoodFusion. All rights reserved.
+        </div>
+    </footer>
 
 <?php if(!isset($_SESSION['user_id'])): // Only render the modal if they aren't logged in ?>
     <div id="joinModal" class="modal">
