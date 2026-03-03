@@ -1,6 +1,10 @@
 <?php
-// Start the session at the very top to track if the user is logged in
 session_start();
+require_once 'db_connect.php';
+
+// Fetch the 3 most recent recipes for the Culinary Trends section
+$featured_query = "SELECT * FROM recipes ORDER BY created_at DESC LIMIT 3";
+$featured_result = $conn->query($featured_query);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -38,8 +42,8 @@ session_start();
         <div class="hero-content">
             <h1>Ignite Your Culinary Creativity</h1>
             <p>Join a vibrant community of food enthusiasts. Discover recipes, share your kitchen triumphs, and elevate your home cooking.</p>
-            <!-- <button class="btn secondary-btn">Explore Recipes</button> -->
-            <li><a href="recipes.php" class="btn secondary-btn">Explore Recipes</a></li>
+            <a href="recipes.php" class="hero-btn">Explore Recipes</a>
+            <!-- <li><a href="recipes.php" class="btn secondary-btn">Explore Recipes</a></li> -->
         </div>
     </header>
 
@@ -50,6 +54,9 @@ session_start();
             <h2>Join FoodFusion</h2>
             <p>Create your account to start sharing and saving recipes.</p>
             <form id="registerForm" action="register_process.php" method="POST">
+                
+                <div id="modalAlert" class="alert" style="display: none; margin-bottom: 15px;"></div>
+                
                 <div class="form-group">
                     <input type="text" name="first_name" placeholder="First Name" required>
                     <input type="text" name="last_name" placeholder="Last Name" required>
@@ -76,28 +83,50 @@ session_start();
     <section class="news-feed">
         <h2 class="section-title">Culinary Trends & Featured Recipes</h2>
         <div class="card-grid">
-            <div class="card">
-                <img src="https://images.unsplash.com/photo-1473093295043-cdd812d0e601?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Pasta">
-                <div class="card-content">
-                    <h3>Handmade Pasta Secrets</h3>
-                    <p>Discover the traditional techniques for making perfect pasta from scratch. Trend alert: Beetroot infused dough!</p>
+        <?php 
+        // 1. Create a gallery of high-quality default images
+        $default_images = [
+            'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=80', // Hearty dish
+            'https://images.unsplash.com/photo-1543353071-873f17a7a088?auto=format&fit=crop&w=800&q=80', // Plated meal
+            'https://images.unsplash.com/photo-1476224203421-9ac39bcb3327?auto=format&fit=crop&w=800&q=80', // Gourmet
+            'https://images.unsplash.com/photo-1495521821757-a1efb6729352?auto=format&fit=crop&w=800&q=80'  // Your original tablet image
+        ];
+
+        if ($featured_result && $featured_result->num_rows > 0) {
+            while($row = $featured_result->fetch_assoc()) { 
+                
+                // 2. Clever trick: Use the recipe's unique ID to pick an image from the array!
+                // This ensures the image stays consistent for that specific recipe on refresh.
+                $fallback_index = $row['recipe_id'] % count($default_images);
+                
+                // 3. Check if they uploaded a real image; if not, use the rotating fallback
+                $image = !empty($row['image_url']) ? htmlspecialchars($row['image_url']) : $default_images[$fallback_index];
+                
+                // Truncate instructions
+                $snippet = htmlspecialchars(substr($row['instructions'], 0, 90)) . '...';
+        ?>
+            <div class="card" style="border-radius: 8px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); background: #fff;">
+                <img src="<?php echo $image; ?>" alt="<?php echo htmlspecialchars($row['title']); ?>" style="width: 100%; height: 200px; object-fit: cover;">
+                
+                <div class="card-content" style="padding: 20px;">
+                    <h3 style="color: var(--primary-color); margin-bottom: 10px; font-family: var(--font-heading); font-size: 1.25rem;">
+                        <?php echo htmlspecialchars($row['title']); ?>
+                    </h3>
+                    <p style="color: var(--text-dark); font-size: 0.95rem; line-height: 1.6; margin-bottom: 15px;">
+                        <?php echo $snippet; ?>
+                    </p>
+                    <a href="view_recipe.php?id=<?php echo $row['recipe_id']; ?>" style="color: var(--text-dark); font-weight: 600; text-decoration: none; font-size: 0.9rem;">
+                        Read Recipe &rarr;
+                    </a>
                 </div>
             </div>
-            <div class="card">
-                <img src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Healthy Bowl">
-                <div class="card-content">
-                    <h3>Plant-Based Power Bowls</h3>
-                    <p>Nutrient-dense, colorful, and delicious. See why these bowls are taking the culinary world by storm this month.</p>
-                </div>
-            </div>
-            <div class="card">
-                <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Dessert">
-                <div class="card-content">
-                    <h3>Decadent Vegan Desserts</h3>
-                    <p>Who says you need dairy for a rich dessert? Try our featured recipe for an avocado-based chocolate mousse.</p>
-                </div>
-            </div>
-        </div>
+        <?php 
+            } 
+        } else {
+            echo "<p style='text-align: center; width: 100%;'>No featured recipes to display at the moment. Be the first to add one!</p>";
+        }
+        ?>
+    </div>
     </section>
 
     <section class="events-section">

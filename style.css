@@ -978,6 +978,44 @@ form input {
     box-shadow: none; /* Keeps it flat and modern */
 }
 
+/* =========================================
+   HERO BANNER BUTTON ANIMATIONS (PREMIUM)
+   ========================================= */
+.hero-btn {
+    display: inline-block;
+    padding: 15px 45px; /* Gives the text much more breathing room */
+    background-color: #fff !important; 
+    color: var(--text-dark) !important; 
+    text-decoration: none !important; 
+    
+    /* Typography Upgrades */
+    font-family: 'Poppins', sans-serif !important; /* Clean, modern sans-serif */
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-transform: uppercase; /* Makes it look like a true Call to Action */
+    letter-spacing: 1.5px; /* Adds that high-end, airy feel */
+    
+    /* Shape and Shadow Upgrades */
+    border-radius: 50px !important; /* Perfect smooth pill shape */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); 
+    border: 2px solid #fff; /* Gives the button a crisp edge */
+}
+
+/* --- Smooth Hover Animation --- */
+.hero-btn:hover {
+    transform: translateY(-5px); 
+    box-shadow: 0 15px 25px rgba(0, 0, 0, 0.25); 
+    background-color: var(--primary-color) !important; /* Swaps to your FoodFusion Red */
+    border-color: var(--primary-color) !important;
+    color: #fff !important; 
+}
+
+/* --- Click Animation (Squish Effect) --- */
+.hero-btn:active {
+    transform: translateY(2px) scale(0.98); 
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15); 
+}
 
 /* =========================================
    PRIVACY POLICY STYLES 
