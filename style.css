@@ -809,3 +809,65 @@ form input {
     font-size: 1.1rem;
     color: var(--text-dark);
 }
+
+/* =========================================
+   CONTACT PAGE STYLES 
+   ========================================= */
+
+.contact-hero {
+    height: 40vh;
+    background: linear-gradient(rgba(29, 53, 87, 0.8), rgba(29, 53, 87, 0.8)), url('https://images.unsplash.com/photo-1596524430615-b46475ddff6e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80') center/cover;
+}
+
+.contact-section {
+    padding: 4rem 5%;
+    background-color: var(--bg-color);
+}
+
+.contact-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    background: #fff;
+    padding: 3rem;
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+}
+
+.contact-info h2 {
+    font-family: var(--font-heading);
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+.contact-info p {
+    margin-bottom: 2rem;
+    color: #555;
+    line-height: 1.6;
+}
+
+.info-item {
+    margin-bottom: 1.2rem;
+    font-size: 1.1rem;
+    color: var(--text-dark);
+    padding: 15px;
+    background: #f8fafc;
+    border-radius: 8px;
+    border-left: 4px solid var(--primary-color);
+}
+
+.contact-form-wrapper form input,
+.contact-form-wrapper form select,
+.contact-form-wrapper form textarea {
+    margin-bottom: 20px;
+}
+
+/* Responsive adjustment for small screens */
+@media (max-width: 768px) {
+    .contact-container {
+        grid-template-columns: 1fr;
+        padding: 2rem;
+    }
+}
