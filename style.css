@@ -1,0 +1,791 @@
+/* --- Design Variables --- */
+:root {
+    --primary-color: #E63946; /* Tomato Red */
+    --text-dark: #1D3557;
+    --text-light: #F1FAEE;
+    --bg-color: #FAFAFA;
+    --font-heading: 'Playfair Display', serif;
+    --font-body: 'Poppins', sans-serif;
+    --transition: all 0.3s ease;
+}
+
+/* --- Base Reset --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-body);
+    background-color: var(--bg-color);
+    color: var(--text-dark);
+    line-height: 1.6;
+}
+
+/* --- Typography --- */
+h1, h2, .logo {
+    font-family: var(--font-heading);
+}
+
+/* --- Navigation --- */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 5%;
+    background: #fff;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.logo {
+    font-size: 1.8rem;
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 2rem;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: var(--text-dark);
+    font-weight: 400;
+    transition: var(--transition);
+}
+
+.nav-links a:hover {
+    color: var(--primary-color);
+}
+
+/* --- Buttons --- */
+.btn {
+    padding: 0.6rem 1.5rem;
+    border: none;
+    border-radius: 5px;
+    font-family: var(--font-body);
+    cursor: pointer;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.primary-btn {
+    background-color: var(--primary-color);
+    color: #fff;
+}
+
+.primary-btn:hover {
+    background-color: #c72c38;
+}
+
+.secondary-btn {
+    background-color: #fff;
+    color: var(--text-dark);
+}
+
+.full-width {
+    width: 100%;
+    margin-top: 1rem;
+}
+
+/* --- Hero Section --- */
+.hero {
+    height: 80vh;
+    background: linear-gradient(rgba(29, 53, 87, 0.7), rgba(29, 53, 87, 0.7)), url('https://images.unsplash.com/photo-1556910103-1c02745aae4d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80') center/cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: var(--text-light);
+    padding: 0 20px;
+}
+
+.hero h1 {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+}
+
+.hero p {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* --- Modal (Join Us Pop-up) --- */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    backdrop-filter: blur(5px);
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background-color: #fff;
+    padding: 2.5rem;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 450px;
+    position: relative;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+.close-btn {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #888;
+}
+
+form input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-family: var(--font-body);
+}
+
+.form-group {
+    display: flex;
+    gap: 10px;
+}
+
+/* --- Cookie Banner --- */
+.cookie-banner {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: var(--text-dark);
+    color: #fff;
+    padding: 1rem 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 999;
+}
+
+.cookie-banner a {
+    color: var(--primary-color);
+}
+
+/* --- Password Toggle UI --- */
+.password-wrapper {
+    position: relative;
+    width: 100%;
+    margin: 10px 0;
+}
+
+.password-wrapper input {
+    margin: 0 !important; /* Override previous margins */
+    padding-right: 45px !important; /* Make room for the eye icon */
+}
+
+.toggle-password {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #888;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    transition: color 0.2s ease;
+}
+
+.toggle-password:hover {
+    color: var(--primary-color);
+}
+
+/* --- Logout Button Upgrade --- */
+.outline-btn {
+    background-color: transparent;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+    text-decoration: none;
+    display: inline-block;
+}
+
+.outline-btn:hover {
+    background-color: var(--primary-color);
+    color: #fff;
+}
+
+/* --- News Feed & Cards --- */
+.section-title {
+    text-align: center;
+    font-size: 2.2rem;
+    margin: 3rem 0 2rem;
+    color: var(--text-dark);
+}
+
+.news-feed {
+    padding: 0 5% 4rem;
+}
+
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.card {
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    transition: var(--transition);
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+.card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.card-content {
+    padding: 1.5rem;
+}
+
+.card-content h3 {
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+}
+
+/* --- Events Carousel --- */
+.events-section {
+    background-color: #f0f4f8;
+    padding: 3rem 5% 4rem;
+}
+
+.carousel-container {
+    position: relative;
+    max-width: 900px;
+    margin: 0 auto;
+    overflow: hidden;
+    border-radius: 10px;
+    background: #fff;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.carousel-track {
+    display: flex;
+    transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1); /* Smoother slide transition */
+}
+
+.carousel-slide {
+    min-width: 100%;
+    box-sizing: border-box;
+}
+
+/* Event Box with Image Background */
+.event-box {
+    position: relative;
+    height: 400px; /* Fixed height for the slide */
+    display: flex;
+    align-items: flex-end; /* Push text to the bottom */
+    overflow: hidden;
+}
+
+.event-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+}
+
+.event-details {
+    position: relative;
+    z-index: 2;
+    background: rgba(255, 255, 255, 0.95); /* Slightly transparent white box */
+    padding: 1.5rem;
+    width: 100%;
+    text-align: center;
+    border-top: 3px solid var(--primary-color);
+}
+
+.event-details h3 {
+    font-family: var(--font-heading);
+    font-size: 1.8rem;
+    color: var(--text-dark);
+    margin-bottom: 5px;
+}
+
+/* Timer Styles */
+.countdown-timer {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.time-box {
+    background: var(--primary-color);
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    min-width: 65px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.time-box span {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: bold;
+    line-height: 1;
+}
+
+.time-box small {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Carousel Buttons */
+.carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255,255,255,0.7);
+    color: var(--text-dark);
+    border: none;
+    font-size: 1.5rem;
+    padding: 15px 20px;
+    cursor: pointer;
+    z-index: 10;
+    transition: var(--transition);
+    border-radius: 50%;
+    margin: 0 10px;
+}
+
+.carousel-btn:hover {
+    background: var(--primary-color);
+    color: #fff;
+}
+
+.prev-btn { left: 0; }
+.next-btn { right: 0; }
+
+/* --- Footer --- */
+.site-footer {
+    background-color: var(--text-dark);
+    color: var(--text-light);
+    padding: 3rem 5% 1rem;
+    text-align: center;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    width: 100%;
+}
+
+.footer-logo {
+    flex: 1;
+    text-align: left;
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    color: var(--primary-color);
+}
+
+/* --- Footer Text Links Fix --- */
+.footer-links {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+}
+
+.footer-links a {
+    color: var(--text-light); /* Makes the text a clean white/off-white */
+    text-decoration: none; /* Removes the ugly underline! */
+    font-size: 0.95rem;
+    font-weight: 300;
+    transition: var(--transition);
+}
+
+.footer-links a:hover {
+    color: var(--primary-color); /* Turns them a slick Tomato Red when hovered */
+}
+
+/* Ensure copyright text remains perfectly centered */
+.copyright {
+    text-align: center;
+    font-size: 0.9rem;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding-top: 1rem;
+    opacity: 0.8;
+}
+
+/* --- Upgraded Social Links (Text + Icon Stack) --- */
+.social-links {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end; 
+    gap: 25px; 
+    align-items: center;
+}
+
+.social-item {
+    display: flex;
+    flex-direction: column; /* Stacks the text on top of the icon */
+    align-items: center;
+    gap: 8px; /* Space between the text and the icon */
+    color: var(--text-light);
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.social-name {
+    font-size: 0.95rem;
+    font-weight: 300;
+    letter-spacing: 0.5px;
+}
+
+.social-item svg {
+    width: 38px;
+    height: 38px;
+    padding: 8px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.05); /* Subtle circle background behind icon */
+    transition: var(--transition);
+}
+
+/* --- Hover Effects --- */
+.social-item:hover {
+    color: var(--primary-color); /* Turns the text red on hover */
+}
+
+.social-item:hover svg {
+    background-color: var(--primary-color);
+    color: #fff;
+    transform: translateY(-4px); /* Makes the icon "pop" up */
+    box-shadow: 0 5px 15px rgba(230, 57, 70, 0.4);
+}
+
+/* =========================================
+   ABOUT US PAGE SPECIFIC STYLES 
+   ========================================= */
+
+/* Shorter Hero Banner for Sub-pages */
+.about-hero {
+    height: 40vh; /* Shorter than the homepage hero */
+    background: linear-gradient(rgba(29, 53, 87, 0.8), rgba(29, 53, 87, 0.8)), url('https://images.unsplash.com/photo-1556911220-e15b29be8c8f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80') center/cover;
+}
+
+.about-section {
+    padding: 4rem 5%;
+    background-color: var(--bg-color);
+}
+
+/* Philosophy Text */
+.philosophy-content {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.lead-text {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+    font-family: var(--font-heading);
+}
+
+/* Values Grid Background */
+.values-section {
+    background-color: #f0f4f8; /* Soft grey/blue background to break up the page */
+    padding: 4rem 5%;
+}
+
+.values-grid {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.value-card {
+    text-align: center;
+    padding: 2.5rem 1.5rem;
+}
+
+.value-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: var(--text-dark);
+}
+
+/* Team Grid */
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 3rem;
+    max-width: 1000px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.team-member img {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%; /* Makes the image a perfect circle */
+    object-fit: cover;
+    margin-bottom: 1.5rem;
+    border: 4px solid #fff;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    transition: var(--transition);
+}
+
+.team-member:hover img {
+    transform: scale(1.05); /* Slight zoom effect on hover */
+    border-color: var(--primary-color); /* Ring turns red on hover */
+}
+
+.team-member h3 {
+    font-family: var(--font-heading);
+    color: var(--text-dark);
+    font-size: 1.4rem;
+}
+
+.team-member p {
+    color: var(--primary-color);
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 5px;
+}
+
+/* =========================================
+   RECIPES PAGE SPECIFIC STYLES 
+   ========================================= */
+
+.recipe-hero {
+    height: 40vh;
+    background: linear-gradient(rgba(29, 53, 87, 0.7), rgba(29, 53, 87, 0.7)), url('https://images.unsplash.com/photo-1466637574441-749b8f19452f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80') center/cover;
+}
+
+/* Filter Bar */
+.filter-section {
+    background-color: #fff;
+    padding: 1.5rem 5%;
+    border-bottom: 1px solid #eee;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+}
+
+.filter-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-items: center;
+    justify-content: center;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.filter-dropdown {
+    padding: 8px 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    color: var(--text-dark);
+    outline: none;
+}
+
+/* Recipe Cards & Badges */
+.recipe-collection {
+    padding: 4rem 5%;
+}
+
+.recipe-card {
+    display: flex;
+    flex-direction: column;
+}
+
+.recipe-badges {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+}
+
+.badge {
+    font-size: 0.75rem;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.badge-cuisine { background-color: #e2e8f0; color: #475569; }
+.badge-diet { background-color: #dcfce7; color: #166534; }
+
+/* Difficulty Badge Colors */
+.badge-difficulty.easy { background-color: #fef08a; color: #854d0e; }
+.badge-difficulty.medium { background-color: #fed7aa; color: #9a3412; }
+.badge-difficulty.hard { background-color: #fecaca; color: #991b1b; }
+
+
+/* =========================================
+   VIEW RECIPE (SINGLE) PAGE STYLES 
+   ========================================= */
+
+.single-recipe-container {
+    max-width: 800px;
+    margin: 3rem auto 5rem;
+    padding: 3rem;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+.back-link {
+    display: inline-block;
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+    margin-bottom: 2rem;
+    transition: var(--transition);
+}
+
+.back-link:hover {
+    transform: translateX(-5px); /* Smooth slide left effect */
+}
+
+.single-recipe-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.single-recipe-header h1 {
+    font-size: 2.8rem;
+    color: var(--text-dark);
+    margin-bottom: 10px;
+}
+
+.recipe-author {
+    font-size: 1rem;
+    color: #666;
+    margin-bottom: 1.5rem;
+}
+
+.justify-center {
+    justify-content: center;
+}
+
+.single-recipe-desc {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #444;
+    margin-top: 1.5rem;
+    font-style: italic;
+}
+
+.recipe-divider {
+    border: 0;
+    height: 1px;
+    background: #eee;
+    margin: 2.5rem 0;
+}
+
+.recipe-instructions-block h2 {
+    font-size: 1.8rem;
+    color: var(--text-dark);
+    margin-bottom: 1.5rem;
+    font-family: var(--font-heading);
+}
+
+.instructions-text {
+    font-size: 1.05rem;
+    line-height: 2; /* Gives the text nice breathing room */
+    color: #333;
+}
+
+
+/* =========================================
+   COMMUNITY PAGE STYLES 
+   ========================================= */
+
+.submission-section {
+    background-color: #fff;
+    padding: 4rem 5%;
+    border-bottom: 1px solid #eee;
+}
+
+.form-container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: var(--bg-color);
+    padding: 3rem;
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+}
+
+.custom-form input, 
+.custom-form textarea, 
+.custom-form select {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-family: var(--font-body);
+    font-size: 1rem;
+}
+
+.custom-form textarea {
+    resize: vertical;
+}
+
+.form-group-3 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.login-prompt {
+    text-align: center;
+    padding: 2rem;
+    background: #fff;
+    border-radius: 8px;
+    border: 2px dashed #ccc;
+}
+
+.login-prompt p {
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+    color: var(--text-dark);
+}

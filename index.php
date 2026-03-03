@@ -1,0 +1,182 @@
+<?php
+// Start the session at the very top to track if the user is logged in
+session_start();
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FoodFusion | Culinary Creativity</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo">FoodFusion</div>
+        <ul class="nav-links">
+            <li><a href="index.php">Home</a></li>
+            <li><a href="about.php">About Us</a></li>
+            <li><a href="recipes.php">Recipes</a></li>
+            <li><a href="community.php">Community</a></li>
+            <li><a href="resources.php">Resources</a></li>
+        </ul>
+        
+        <?php 
+        // Dynamic Button: Check if the user is already logged in
+        if(isset($_SESSION['user_id'])): 
+        ?>
+            <a href="logout.php" class="btn outline-btn">Logout</a>
+        <?php else: ?>
+            <button id="openModalBtn" class="btn primary-btn">Join Us</button>
+        <?php endif; ?>
+
+    </nav>
+
+    <header class="hero">
+        <div class="hero-content">
+            <h1>Ignite Your Culinary Creativity</h1>
+            <p>Join a vibrant community of food enthusiasts. Discover recipes, share your kitchen triumphs, and elevate your home cooking.</p>
+            <!-- <button class="btn secondary-btn">Explore Recipes</button> -->
+            <li><a href="recipes.php" class="btn secondary-btn">Explore Recipes</a></li>
+        </div>
+    </header>
+
+    <?php if(!isset($_SESSION['user_id'])): // Only render the modal if they aren't logged in ?>
+    <div id="joinModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Join FoodFusion</h2>
+            <p>Create your account to start sharing and saving recipes.</p>
+            <form id="registerForm" action="register_process.php" method="POST">
+                <div class="form-group">
+                    <input type="text" name="first_name" placeholder="First Name" required>
+                    <input type="text" name="last_name" placeholder="Last Name" required>
+                </div>
+                <input type="email" name="email" placeholder="Email Address" required>
+                <div class="password-wrapper">
+                <input type="password" name="password" id="regPassword" placeholder="Password" required>
+                <button type="button" class="toggle-password" onclick="togglePasswordVisibility('regPassword', this)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                </button>
+            </div>
+                <button type="submit" class="btn primary-btn full-width">Sign Up</button>
+                
+                <p style="margin-top: 15px; font-size: 0.9em; text-align: center;">
+                    Already have an account? <a href="login.php" style="color: var(--primary-color);">Log in here</a>.
+                </p>
+            </form>
+        </div>
+    </div>
+    <?php endif; ?>
+
+    <div id="cookieConsent" class="cookie-banner">
+        <p>We use cookies to improve your experience. By continuing to visit this site you agree to our <a href="privacy.php">Privacy Policy</a>.</p>
+        <button id="acceptCookies" class="btn outline-btn">Got it!</button>
+    </div>
+
+    <section class="news-feed">
+        <h2 class="section-title">Culinary Trends & Featured Recipes</h2>
+        <div class="card-grid">
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1473093295043-cdd812d0e601?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Pasta">
+                <div class="card-content">
+                    <h3>Handmade Pasta Secrets</h3>
+                    <p>Discover the traditional techniques for making perfect pasta from scratch. Trend alert: Beetroot infused dough!</p>
+                </div>
+            </div>
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Healthy Bowl">
+                <div class="card-content">
+                    <h3>Plant-Based Power Bowls</h3>
+                    <p>Nutrient-dense, colorful, and delicious. See why these bowls are taking the culinary world by storm this month.</p>
+                </div>
+            </div>
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Dessert">
+                <div class="card-content">
+                    <h3>Decadent Vegan Desserts</h3>
+                    <p>Who says you need dairy for a rich dessert? Try our featured recipe for an avocado-based chocolate mousse.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="events-section">
+        <h2 class="section-title">Upcoming Cooking Events</h2>
+        <div class="carousel-container">
+            <button class="carousel-btn prev-btn" onclick="moveCarousel(-1)">&#10094;</button>
+            <div class="carousel-track">
+                
+                <div class="carousel-slide">
+                    <div class="event-box">
+                        <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80" alt="French Sauces" class="event-image">
+                        <div class="event-details">
+                            <h3>Mastering French Sauces</h3>
+                            <p>Online Workshop</p>
+                            <div class="countdown-timer" data-date="2026-03-15T10:00:00"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="carousel-slide">
+                    <div class="event-box">
+                        <img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80" alt="Sourdough" class="event-image">
+                        <div class="event-details">
+                            <h3>Sourdough for Beginners</h3>
+                            <p>Community Kitchen</p>
+                            <div class="countdown-timer" data-date="2026-03-22T14:00:00"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="carousel-slide">
+                    <div class="event-box">
+                        <img src="https://images.unsplash.com/photo-1596040033229-a9821ebd058d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80" alt="Spices" class="event-image">
+                        <div class="event-details">
+                            <h3>Global Spices Masterclass</h3>
+                            <p>Live Webinar</p>
+                            <div class="countdown-timer" data-date="2026-04-05T18:00:00"></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <button class="carousel-btn next-btn" onclick="moveCarousel(1)">&#10095;</button>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <div class="footer-content">
+            <div class="footer-logo">FoodFusion</div>
+            <div class="footer-links">
+                <a href="privacy.php">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="contact.php">Contact Us</a>
+            </div>
+           <div class="social-links">
+                <a href="https://facebook.com" target="_blank" class="social-item" aria-label="Facebook">
+                    <span class="social-name">Facebook</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+                </a>
+                
+                <a href="https://instagram.com" target="_blank" class="social-item" aria-label="Instagram">
+                    <span class="social-name">Instagram</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                </a>
+                
+                <a href="https://twitter.com" target="_blank" class="social-item" aria-label="Twitter">
+                    <span class="social-name">Twitter</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg>
+                </a>
+            </div>
+        </div>
+        <div class="copyright">
+            &copy; <?php echo date("Y"); ?> FoodFusion. All rights reserved.
+        </div>
+    </footer>
+
+    <script src="main.js"></script>
+</body>
+</html>
