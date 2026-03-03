@@ -871,3 +871,47 @@ form input {
         padding: 2rem;
     }
 }
+
+
+/* =========================================
+   RESOURCES PAGE STYLES 
+   ========================================= */
+
+.resource-hero {
+    height: 40vh;
+    background: linear-gradient(rgba(29, 53, 87, 0.8), rgba(29, 53, 87, 0.8)), url('https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80') center/cover;
+}
+
+.resource-collection {
+    padding: 4rem 5%;
+    background-color: var(--bg-color);
+}
+
+.resource-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 2rem;
+    border-top: 5px solid var(--text-dark);
+}
+
+.resource-icon-wrapper {
+    width: 80px;
+    height: 80px;
+    background-color: #f0f4f8;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 1rem;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.resource-icon {
+    font-size: 2.5rem;
+}
+
+/* File Type Badges */
+.badge-pdf { background-color: #fee2e2; color: #b91c1c; }
+.badge-video { background-color: #e0e7ff; color: #4338ca; }
+.badge-info { background-color: #f3e8ff; color: #7e22ce; }
