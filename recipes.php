@@ -122,37 +122,66 @@ function isSelected($filterName, $value) {
 
     <section class="recipe-collection">
         <div class="card-grid">
-            
-            <?php 
-            // Check if we have recipes in the database
-            if ($result->num_rows > 0) {
-                // Loop through each row in the database and generate a card
-                while($row = $result->fetch_assoc()) { 
-            ?>
-                <div class="card recipe-card">
-                    <img src="https://images.unsplash.com/photo-1495521821757-a1efb6729352?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Recipe Image">
-                    
-                    <div class="card-content">
-                        <div class="recipe-badges">
-                            <span class="badge badge-cuisine"><?php echo htmlspecialchars($row['cuisine_type']); ?></span>
-                            <span class="badge badge-diet"><?php echo htmlspecialchars($row['dietary_preference']); ?></span>
-                            <span class="badge badge-difficulty <?php echo strtolower($row['difficulty_level']); ?>"><?php echo htmlspecialchars($row['difficulty_level']); ?></span>
-                        </div>
-                        
-                        <h3><?php echo htmlspecialchars($row['title']); ?></h3>
-                        <p><?php echo htmlspecialchars($row['description']); ?></p>
-                        
-                        <a href="view_recipe.php?id=<?php echo $row['recipe_id']; ?>" class="btn primary-btn full-width" style="margin-top: 15px; text-align: center; display: block; text-decoration: none; box-sizing: border-box;">View Recipe</a>
-                    </div>
-                </div>
-            <?php 
-                } 
-            } else {
-                echo "<p style='text-align: center; width: 100%;'>No recipes found in the database yet.</p>";
-            }
-            ?>
+        <?php 
+        // 1. The same gallery of high-quality default images
+        $default_images = [
+            'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=80', // Hearty dish
+            'https://images.unsplash.com/photo-1543353071-873f17a7a088?auto=format&fit=crop&w=800&q=80', // Plated meal
+            'https://images.unsplash.com/photo-1476224203421-9ac39bcb3327?auto=format&fit=crop&w=800&q=80', // Gourmet
+            'https://images.unsplash.com/photo-1495521821757-a1efb6729352?auto=format&fit=crop&w=800&q=80'  // Tablet image
+        ];
 
-        </div>
+        if ($result && $result->num_rows > 0) {
+            while($row = $result->fetch_assoc()) { 
+                
+                // 2. Pick a deterministic fallback image based on recipe_id
+                $fallback_index = $row['recipe_id'] % count($default_images);
+                $image = !empty($row['image_url']) ? htmlspecialchars($row['image_url']) : $default_images[$fallback_index];
+                
+                // 3. Truncate instructions for the description teaser
+                $snippet = htmlspecialchars(substr($row['instructions'], 0, 90)) . '...';
+        ?>
+            <div class="card recipe-card" style="border-radius: 8px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); background: #fff; display: flex; flex-direction: column;">
+                <img src="<?php echo $image; ?>" alt="<?php echo htmlspecialchars($row['title']); ?>" style="width: 100%; height: 200px; object-fit: cover;">
+                
+                <div class="card-content" style="padding: 20px; flex-grow: 1; display: flex; flex-direction: column;">
+                    
+                    <div class="badges" style="margin-bottom: 15px; display: flex; flex-wrap: wrap; gap: 8px;">
+                        <span style="background: #f0f4f8; color: #475569; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; text-transform: uppercase; font-weight: 700;">
+                            <?php echo htmlspecialchars($row['cuisine_type']); ?>
+                        </span>
+                        <span style="background: #ecfdf5; color: #059669; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; text-transform: uppercase; font-weight: 700;">
+                            <?php echo htmlspecialchars($row['dietary_preference']); ?>
+                        </span>
+                        <span style="background: #fef2f2; color: #dc2626; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; text-transform: uppercase; font-weight: 700;">
+                            <?php echo htmlspecialchars($row['difficulty_level']); ?>
+                        </span>
+                    </div>
+                    
+                    <h3 style="color: var(--primary-color); margin-bottom: 10px; font-family: var(--font-heading); font-size: 1.3rem;">
+                        <?php echo htmlspecialchars($row['title']); ?>
+                    </h3>
+                    
+                    <p style="color: var(--text-dark); font-size: 0.95rem; line-height: 1.6; margin-bottom: 20px; flex-grow: 1;">
+                        <?php echo $snippet; ?>
+                    </p>
+                    
+                    <a href="view_recipe.php?id=<?php echo $row['recipe_id']; ?>" class="btn primary-btn full-width" style="text-align: center; text-decoration: none;">
+                        View Recipe
+                    </a>
+                </div>
+            </div>
+        <?php 
+            } 
+        } else {
+            // Friendly message if they use a filter combination that yields no results
+            echo "<div style='grid-column: 1 / -1; text-align: center; padding: 3rem;'>";
+            echo "<h3>No recipes found</h3>";
+            echo "<p>Try adjusting your filters to discover more culinary creations!</p>";
+            echo "</div>";
+        }
+        ?>
+    </div>
     </section>
 
     <footer class="site-footer">
