@@ -30,18 +30,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // 3. Check if the email already exists in our database
-    $check_stmt = $conn->prepare("SELECT user_id FROM users WHERE email = ?");
-    $check_stmt->bind_param("s", $email); // 's' means we are passing a string
-    $check_stmt->execute();
-    $check_stmt->store_result();
+    $stmt_check = $conn->prepare("SELECT user_id FROM users WHERE email = ?");
+    $stmt_check->bind_param("s", $email);
+    $stmt_check->execute();
+    $stmt_check->store_result(); // Store the result so we can count the rows
 
-    if ($check_stmt->num_rows > 0) {
-        $_SESSION['error'] = "An account with this email already exists.";
-        $check_stmt->close();
-        header("Location: index.php");
+    if ($stmt_check->num_rows > 0) {
+        // ERROR: The email is already taken! 
+        // Send them back to the homepage and attach the error to the URL.
+        $stmt_check->close();
+        header("Location: index.php?error=An account with this email already exists. Please log in.");
         exit();
     }
-    $check_stmt->close();
+    $stmt_check->close();
 
     // 4. Hash the password
     // NEVER store plain-text passwords. This creates a secure, salted hash.
@@ -61,6 +62,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $_SESSION['error'] = "Oops! Something went wrong. Please try again.";
         header("Location: index.php");
         exit();
+    }
+
+    // Example of a failed login in your PHP file
+    if ($password_is_wrong) {
+    // This sends the user back to the homepage and attaches the error to the URL!
+    header("Location: index.php?error=Invalid email or password. Please try again.");
+    exit();
     }
 
     // Clean up

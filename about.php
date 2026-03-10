@@ -39,7 +39,7 @@ session_start();
     <section class="about-section">
         <h2 class="section-title">Our Culinary Philosophy</h2>
         <div class="philosophy-content">
-            <p class="lead-text">At FoodFusion, we believe that cooking is more than just a daily chore—it is an art form, a way to connect with loved ones, and a celebration of global cultures.</p>
+            <p class="lead-text">At FoodFusion, we believe that cooking is more than just a daily chore, it is an art form, a way to connect with loved ones, and a celebration of global cultures.</p>
             <p>We are dedicated to demystifying the kitchen. Whether you are boiling water for the first time or mastering complex French sauces, our mission is to make culinary creativity accessible, enjoyable, and rewarding for everyone.</p>
         </div>
     </section>
@@ -88,7 +88,7 @@ session_start();
             <div class="footer-logo">FoodFusion</div>
             <div class="footer-links">
                 <a href="privacy.php">Privacy Policy</a>
-                <a href="#">Terms of Service</a>
+                <a href="terms.php">Terms of Service</a>
                 <a href="contact.php">Contact Us</a>
             </div>
             

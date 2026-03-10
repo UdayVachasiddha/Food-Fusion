@@ -49,6 +49,28 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+// --- Modal Error Handling ---
+    // This checks the URL for something like "?error=Invalid Password"
+    const urlParams = new URLSearchParams(window.location.search);
+    const errorMsg = urlParams.get('error');
+
+    if (errorMsg) {
+        // 1. Force the modal to open
+        const modal = document.getElementById('joinModal');
+        if (modal) modal.style.display = 'flex';
+
+        // 2. Inject the error message into the red box
+        const alertBox = document.getElementById('modalAlert');
+        if (alertBox) {
+            alertBox.style.display = 'block';
+            alertBox.className = 'alert alert-error';
+            alertBox.textContent = errorMsg; // Safely displays the PHP error
+        }
+        
+        // 3. Clean up the URL so the error doesn't stay there forever if they refresh
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }
+
 // --- Carousel & Timer Logic ---
 let slideIndex = 0;
 let slideInterval; // Variable to hold the auto-play timer

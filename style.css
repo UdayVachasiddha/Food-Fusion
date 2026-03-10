@@ -734,6 +734,26 @@ form input {
     color: #333;
 }
 
+/* --- Force 3 Columns on Recipe Grid --- */
+.recipe-collection .card-grid {
+    grid-template-columns: repeat(3, 1fr);
+    max-width: 1200px; /* Prevents the 3 cards from stretching too wide on massive monitors */
+    margin: 0 auto; /* Centers the grid perfectly */
+}
+
+/* Responsive adjustments for tablets and smaller screens */
+@media (max-width: 992px) {
+    .recipe-collection .card-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .recipe-collection .card-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
 
 /* =========================================
    COMMUNITY PAGE STYLES 
@@ -788,4 +808,262 @@ form input {
     margin-bottom: 15px;
     font-size: 1.1rem;
     color: var(--text-dark);
+}
+
+/* =========================================
+   CONTACT PAGE STYLES 
+   ========================================= */
+
+.contact-hero {
+    height: 40vh;
+    background: linear-gradient(rgba(29, 53, 87, 0.8), rgba(29, 53, 87, 0.8)), url('https://images.unsplash.com/photo-1596524430615-b46475ddff6e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80') center/cover;
+}
+
+.contact-section {
+    padding: 4rem 5%;
+    background-color: var(--bg-color);
+}
+
+.contact-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    background: #fff;
+    padding: 3rem;
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+}
+
+.contact-info h2 {
+    font-family: var(--font-heading);
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+.contact-info p {
+    margin-bottom: 2rem;
+    color: #555;
+    line-height: 1.6;
+}
+
+.info-item {
+    margin-bottom: 1.2rem;
+    font-size: 1.1rem;
+    color: var(--text-dark);
+    padding: 15px;
+    background: #f8fafc;
+    border-radius: 8px;
+    border-left: 4px solid var(--primary-color);
+}
+
+.contact-form-wrapper form input,
+.contact-form-wrapper form select,
+.contact-form-wrapper form textarea {
+    margin-bottom: 20px;
+}
+
+/* Responsive adjustment for small screens */
+@media (max-width: 768px) {
+    .contact-container {
+        grid-template-columns: 1fr;
+        padding: 2rem;
+    }
+}
+
+
+/* =========================================
+   RESOURCES PAGE STYLES 
+   ========================================= */
+
+.resource-hero {
+    height: 40vh;
+    background: linear-gradient(rgba(29, 53, 87, 0.8), rgba(29, 53, 87, 0.8)), url('https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80') center/cover;
+}
+
+.resource-collection {
+    padding: 4rem 5%;
+    background-color: var(--bg-color);
+}
+
+.resource-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 2rem;
+    border-top: 5px solid var(--text-dark);
+}
+
+.resource-icon-wrapper {
+    width: 80px;
+    height: 80px;
+    background-color: #f0f4f8;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 1rem;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.resource-icon {
+    font-size: 2.5rem;
+}
+
+/* File Type Badges */
+.badge-pdf { background-color: #fee2e2; color: #b91c1c; }
+.badge-video { background-color: #e0e7ff; color: #4338ca; }
+.badge-info { background-color: #f3e8ff; color: #7e22ce; }
+
+/* =========================================
+   PROFESSIONAL COOKIE CONSENT BANNER 
+   ========================================= */
+.cookie-banner {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 850px;
+    background-color: #1d3557; /* Deep navy blue to match your footer */
+    border-radius: 8px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+    z-index: 9999;
+    padding: 1.5rem 2rem;
+}
+
+.cookie-content {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    width: 100%;
+}
+
+.cookie-content p {
+    margin: 0;
+    flex: 1 1 400px;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.85); /* Soft white for easy reading */
+    line-height: 1.6;
+    font-weight: 300;
+}
+
+.cookie-buttons {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+/* Custom styling for the "Learn More" link on a dark background */
+.cookie-link {
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 400;
+    transition: var(--transition);
+}
+
+.cookie-link:hover {
+    color: #fff;
+    text-decoration: underline;
+}
+
+/* Make sure the primary button fits the dark theme cleanly */
+.cookie-buttons .primary-btn {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+    box-shadow: none; /* Keeps it flat and modern */
+}
+
+/* =========================================
+   HERO BANNER BUTTON ANIMATIONS (PREMIUM)
+   ========================================= */
+.hero-btn {
+    display: inline-block;
+    padding: 15px 45px; /* Gives the text much more breathing room */
+    background-color: #fff !important; 
+    color: var(--text-dark) !important; 
+    text-decoration: none !important; 
+    
+    /* Typography Upgrades */
+    font-family: 'Poppins', sans-serif !important; /* Clean, modern sans-serif */
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-transform: uppercase; /* Makes it look like a true Call to Action */
+    letter-spacing: 1.5px; /* Adds that high-end, airy feel */
+    
+    /* Shape and Shadow Upgrades */
+    border-radius: 50px !important; /* Perfect smooth pill shape */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); 
+    border: 2px solid #fff; /* Gives the button a crisp edge */
+}
+
+/* --- Smooth Hover Animation --- */
+.hero-btn:hover {
+    transform: translateY(-5px); 
+    box-shadow: 0 15px 25px rgba(0, 0, 0, 0.25); 
+    background-color: var(--primary-color) !important; /* Swaps to your FoodFusion Red */
+    border-color: var(--primary-color) !important;
+    color: #fff !important; 
+}
+
+/* --- Click Animation (Squish Effect) --- */
+.hero-btn:active {
+    transform: translateY(2px) scale(0.98); 
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15); 
+}
+
+/* =========================================
+   PRIVACY POLICY STYLES 
+   ========================================= */
+
+.policy-container {
+    max-width: 800px;
+    margin: 4rem auto 6rem;
+    padding: 3rem;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+
+.last-updated {
+    font-size: 0.95rem;
+    color: #666;
+    margin-bottom: 2.5rem;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 1rem;
+}
+
+.policy-section {
+    margin-bottom: 2.5rem;
+}
+
+.policy-section h2 {
+    font-family: var(--font-heading);
+    color: var(--primary-color);
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.policy-section p {
+    font-size: 1.05rem;
+    line-height: 1.8;
+    color: var(--text-dark);
+    margin-bottom: 1rem;
+}
+
+.policy-section ul {
+    margin-left: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.policy-section li {
+    font-size: 1.05rem;
+    line-height: 1.8;
+    color: var(--text-dark);
+    margin-bottom: 0.5rem;
 }

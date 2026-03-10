@@ -2,13 +2,8 @@
 session_start();
 require_once 'db_connect.php';
 
-// Fetch COMMUNITY recipes (where user_id IS NOT NULL), joined with the users table to get their names
-$query = "
-    SELECT recipes.*, users.first_name, users.last_name 
-    FROM recipes 
-    JOIN users ON recipes.user_id = users.user_id 
-    ORDER BY recipes.created_at DESC
-";
+// Fetch all resources from the database
+$query = "SELECT * FROM resources ORDER BY created_at DESC";
 $result = $conn->query($query);
 ?>
 <!DOCTYPE html>
@@ -16,7 +11,7 @@ $result = $conn->query($query);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Community Cookbook | FoodFusion</title>
+    <title>Culinary Resources | FoodFusion</title>
     <link rel="stylesheet" href="style.css?v=<?php echo time(); ?>">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
@@ -28,8 +23,8 @@ $result = $conn->query($query);
             <li><a href="index.php">Home</a></li>
             <li><a href="about.php">About Us</a></li>
             <li><a href="recipes.php">Recipes</a></li>
-            <li><a href="community.php" style="color: var(--primary-color);">Community</a></li>
-            <li><a href="resources.php">Resources</a></li>
+            <li><a href="community.php">Community</a></li>
+            <li><a href="resources.php" style="color: var(--primary-color);">Resources</a></li>
         </ul>
         
         <?php if(isset($_SESSION['user_id'])): ?>
@@ -39,75 +34,57 @@ $result = $conn->query($query);
         <?php endif; ?>
     </nav>
 
-    <header class="hero recipe-hero" style="background-image: linear-gradient(rgba(29, 53, 87, 0.7), rgba(29, 53, 87, 0.7)), url('https://images.unsplash.com/photo-1547592180-85f173990554?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');">
+    <header class="hero resource-hero">
         <div class="hero-content">
-            <h1>Community Cookbook</h1>
-            <p>Share your kitchen triumphs and discover recipes from food enthusiasts around the world.</p>
+            <h1>Culinary Resources</h1>
+            <p>Expand your knowledge with our free guides, video tutorials, and educational infographics.</p>
         </div>
     </header>
 
-    <section class="submission-section">
-        <div class="form-container">
-            <h2 class="section-title">Share Your Recipe</h2>
-            
-            <?php if(isset($_SESSION['user_id'])): ?>
-                <form id="recipeForm" class="custom-form">
-                    <div id="formMessage" class="alert" style="display: none;"></div>
-                    
-                    <input type="text" name="title" placeholder="Recipe Title" required>
-                    <textarea name="description" placeholder="Brief Description..." rows="2" required></textarea>
-                    
-                    <div class="form-group-3">
-                        <input type="text" name="cuisine_type" placeholder="Cuisine (e.g., Italian, Mexican)" required>
-                        <input type="text" name="dietary_preference" placeholder="Dietary (e.g., Vegan, None)" required>
-                        <select name="difficulty_level" required>
-                            <option value="" disabled selected>Select Difficulty</option>
-                            <option value="Easy">Easy</option>
-                            <option value="Medium">Medium</option>
-                            <option value="Hard">Hard</option>
-                        </select>
-                    </div>
-
-                    <textarea name="instructions" placeholder="Step-by-step instructions..." rows="6" required></textarea>
-                    <button type="submit" class="btn primary-btn full-width" id="submitRecipeBtn">Publish Recipe</button>
-                </form>
-            <?php else: ?>
-                <div class="login-prompt">
-                    <p>You must be logged in to share your culinary creations!</p>
-                    <button id="triggerLoginModal" class="btn outline-btn" onclick="document.getElementById('joinModal').style.display='flex'">Log In / Sign Up</button>
-                </div>
-            <?php endif; ?>
-        </div>
-    </section>
-
-    <section class="recipe-collection" style="background: var(--bg-color);">
-        <h2 class="section-title">Latest Community Submissions</h2>
+    <section class="resource-collection">
         <div class="card-grid">
             
             <?php 
             if ($result->num_rows > 0) {
                 while($row = $result->fetch_assoc()) { 
+                    
+                    // Determine which icon/color to show based on file type
+                    $file_icon = "📄"; // Default
+                    $badge_class = "badge-pdf";
+                    if ($row['file_type'] == 'Video') {
+                        $file_icon = "▶️";
+                        $badge_class = "badge-video";
+                    } elseif ($row['file_type'] == 'Infographic') {
+                        $file_icon = "📊";
+                        $badge_class = "badge-info";
+                    }
             ?>
-                <div class="card recipe-card">
-                    <div class="card-content" style="border-top: 4px solid var(--primary-color);">
-                        <p style="font-size: 0.8rem; color: #888; text-transform: uppercase;">By <?php echo htmlspecialchars($row['first_name'] . " " . $row['last_name']); ?></p>
-                        <h3><?php echo htmlspecialchars($row['title']); ?></h3>
+                <div class="card resource-card">
+                    <div class="resource-icon-wrapper">
+                        <span class="resource-icon"><?php echo $file_icon; ?></span>
+                    </div>
+                    
+                    <div class="card-content" style="text-align: center;">
+                        <span class="badge <?php echo $badge_class; ?>" style="margin-bottom: 10px; display: inline-block;">
+                            <?php echo htmlspecialchars($row['file_type']); ?>
+                        </span>
                         
-                        <div class="recipe-badges" style="margin: 10px 0;">
-                            <span class="badge badge-cuisine"><?php echo htmlspecialchars($row['cuisine_type']); ?></span>
-                            <span class="badge badge-difficulty <?php echo strtolower($row['difficulty_level']); ?>"><?php echo htmlspecialchars($row['difficulty_level']); ?></span>
-                        </div>
+                        <p style="font-size: 0.8rem; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px;">
+                            <?php echo str_replace('_', ' ', htmlspecialchars($row['category'])); ?>
+                        </p>
                         
-                        <p><?php echo htmlspecialchars($row['description']); ?></p>
-                        <a href="view_recipe.php?id=<?php echo $row['recipe_id']; ?>" class="btn outline-btn full-width" style="margin-top: 15px; text-align: center; display: block; text-decoration: none;">Read More</a>
+                        <h3 style="margin-bottom: 15px; font-size: 1.3rem;"><?php echo htmlspecialchars($row['title']); ?></h3>
+                        
+                        <a href="<?php echo htmlspecialchars($row['file_path']); ?>" target="_blank" class="btn outline-btn full-width">Access Resource</a>
                     </div>
                 </div>
             <?php 
                 } 
             } else {
-                echo "<p style='text-align: center; width: 100%;'>No community recipes yet. Be the first to submit!</p>";
+                echo "<p style='text-align: center; width: 100%;'>No resources available at the moment.</p>";
             }
             ?>
+
         </div>
     </section>
 
@@ -141,7 +118,7 @@ $result = $conn->query($query);
         </div>
     </footer>
 
-    <?php if(!isset($_SESSION['user_id'])): // Only render the modal if they aren't logged in ?>
+    <?php if(!isset($_SESSION['user_id'])): ?>
     <div id="joinModal" class="modal">
         <div class="modal-content">
             <span class="close-btn">&times;</span>

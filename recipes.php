@@ -1,11 +1,55 @@
 <?php
 session_start();
-require_once 'db_connect.php'; // Connect to our database!
+require_once 'db_connect.php'; 
 
-// Fetch all curated recipes (where user_id is NULL)
-// We will order them by newest first
-$query = "SELECT * FROM recipes WHERE user_id IS NULL ORDER BY created_at DESC";
-$result = $conn->query($query);
+// 1. Base query to fetch all recipes
+$query = "SELECT recipes.*, users.first_name, users.last_name FROM recipes LEFT JOIN users ON recipes.user_id = users.user_id";
+
+// 2. Arrays to hold our dynamic filter conditions and parameters
+$conditions = [];
+$params = [];
+$types = "";
+
+// 3. Check if filters were submitted and add them to the query
+if (isset($_GET['cuisine']) && $_GET['cuisine'] !== 'all') {
+    $conditions[] = "cuisine_type = ?";
+    $params[] = $_GET['cuisine'];
+    $types .= "s";
+}
+
+if (isset($_GET['diet']) && $_GET['diet'] !== 'all') {
+    $conditions[] = "dietary_preference = ?";
+    $params[] = $_GET['diet'];
+    $types .= "s";
+}
+
+if (isset($_GET['difficulty']) && $_GET['difficulty'] !== 'all') {
+    $conditions[] = "difficulty_level = ?";
+    $params[] = $_GET['difficulty'];
+    $types .= "s";
+}
+
+// 4. If we have any conditions, append them to the base query with "WHERE" and "AND"
+if (count($conditions) > 0) {
+    $query .= " WHERE " . implode(" AND ", $conditions);
+}
+
+// 5. Always order by newest first at the very end
+$query .= " ORDER BY recipes.created_at DESC";
+
+// 6. Execute securely using prepared statements
+$stmt = $conn->prepare($query);
+if ($types) {
+    // Dynamically bind the parameters if filters were used
+    $stmt->bind_param($types, ...$params);
+}
+$stmt->execute();
+$result = $stmt->get_result();
+
+// Helper function to keep dropdowns selected after page reload
+function isSelected($filterName, $value) {
+    return (isset($_GET[$filterName]) && $_GET[$filterName] === $value) ? 'selected' : '';
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -43,64 +87,132 @@ $result = $conn->query($query);
     </header>
 
     <section class="filter-section">
-        <div class="filter-container">
+        <form method="GET" action="recipes.php" class="filter-container">
             <span><strong>Filter By:</strong></span>
-            <select class="filter-dropdown">
+            
+            <select name="cuisine" class="filter-dropdown">
                 <option value="all">All Cuisines</option>
-                <option value="italian">Italian</option>
-                <option value="thai">Thai</option>
-                <option value="mexican">Mexican</option>
+                <option value="Italian" <?php echo isSelected('cuisine', 'Italian'); ?>>Italian</option>
+                <option value="Thai" <?php echo isSelected('cuisine', 'Thai'); ?>>Thai</option>
+                <option value="Indian" <?php echo isSelected('cuisine', 'Indian'); ?>>Indian</option>
+                <option value="Mexican" <?php echo isSelected('cuisine', 'Mexican'); ?>>Mexican</option>
             </select>
-            <select class="filter-dropdown">
+            
+            <select name="diet" class="filter-dropdown">
                 <option value="all">Any Diet</option>
-                <option value="vegetarian">Vegetarian</option>
-                <option value="vegan">Vegan</option>
-                <option value="gluten-free">Gluten-Free</option>
+                <option value="Vegetarian" <?php echo isSelected('diet', 'Vegetarian'); ?>>Vegetarian</option>
+                <option value="Vegan" <?php echo isSelected('diet', 'Vegan'); ?>>Vegan</option>
+                <option value="High-Protein" <?php echo isSelected('diet', 'High-Protein'); ?>>High-Protein</option>
             </select>
-            <select class="filter-dropdown">
+            
+            <select name="difficulty" class="filter-dropdown">
                 <option value="all">Any Difficulty</option>
-                <option value="easy">Easy</option>
-                <option value="medium">Medium</option>
-                <option value="hard">Hard</option>
+                <option value="Easy" <?php echo isSelected('difficulty', 'Easy'); ?>>Easy</option>
+                <option value="Medium" <?php echo isSelected('difficulty', 'Medium'); ?>>Medium</option>
+                <option value="Hard" <?php echo isSelected('difficulty', 'Hard'); ?>>Hard</option>
             </select>
-            <button class="btn primary-btn">Apply Filters</button>
-        </div>
+            
+            <button type="submit" class="btn primary-btn" style="padding: 8px 20px;">Apply Filters</button>
+            
+            <?php if(isset($_GET['cuisine']) || isset($_GET['diet']) || isset($_GET['difficulty'])): ?>
+                <a href="recipes.php" class="btn outline-btn" style="padding: 8px 15px; text-decoration: none;">Clear</a>
+            <?php endif; ?>
+        </form>
     </section>
 
     <section class="recipe-collection">
         <div class="card-grid">
-            
-            <?php 
-            // Check if we have recipes in the database
-            if ($result->num_rows > 0) {
-                // Loop through each row in the database and generate a card
-                while($row = $result->fetch_assoc()) { 
-            ?>
-                <div class="card recipe-card">
-                    <img src="https://images.unsplash.com/photo-1495521821757-a1efb6729352?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Recipe Image">
-                    
-                    <div class="card-content">
-                        <div class="recipe-badges">
-                            <span class="badge badge-cuisine"><?php echo htmlspecialchars($row['cuisine_type']); ?></span>
-                            <span class="badge badge-diet"><?php echo htmlspecialchars($row['dietary_preference']); ?></span>
-                            <span class="badge badge-difficulty <?php echo strtolower($row['difficulty_level']); ?>"><?php echo htmlspecialchars($row['difficulty_level']); ?></span>
-                        </div>
-                        
-                        <h3><?php echo htmlspecialchars($row['title']); ?></h3>
-                        <p><?php echo htmlspecialchars($row['description']); ?></p>
-                        
-                        <a href="view_recipe.php?id=<?php echo $row['recipe_id']; ?>" class="btn primary-btn full-width" style="margin-top: 15px; text-align: center; display: block; text-decoration: none; box-sizing: border-box;">View Recipe</a>
-                    </div>
-                </div>
-            <?php 
-                } 
-            } else {
-                echo "<p style='text-align: center; width: 100%;'>No recipes found in the database yet.</p>";
-            }
-            ?>
+        <?php 
+        // 1. The same gallery of high-quality default images
+        $default_images = [
+            'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=80', // Hearty dish
+            'https://images.unsplash.com/photo-1543353071-873f17a7a088?auto=format&fit=crop&w=800&q=80', // Plated meal
+            'https://images.unsplash.com/photo-1476224203421-9ac39bcb3327?auto=format&fit=crop&w=800&q=80', // Gourmet
+            'https://images.unsplash.com/photo-1495521821757-a1efb6729352?auto=format&fit=crop&w=800&q=80'  // Tablet image
+        ];
 
-        </div>
+        if ($result && $result->num_rows > 0) {
+            while($row = $result->fetch_assoc()) { 
+                
+                // 2. Pick a deterministic fallback image based on recipe_id
+                $fallback_index = $row['recipe_id'] % count($default_images);
+                $image = !empty($row['image_url']) ? htmlspecialchars($row['image_url']) : $default_images[$fallback_index];
+                
+                // 3. Truncate instructions for the description teaser
+                $snippet = htmlspecialchars(substr($row['instructions'], 0, 90)) . '...';
+        ?>
+            <div class="card recipe-card" style="border-radius: 8px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); background: #fff; display: flex; flex-direction: column;">
+                <img src="<?php echo $image; ?>" alt="<?php echo htmlspecialchars($row['title']); ?>" style="width: 100%; height: 200px; object-fit: cover;">
+                
+                <div class="card-content" style="padding: 20px; flex-grow: 1; display: flex; flex-direction: column;">
+                    
+                    <div class="badges" style="margin-bottom: 15px; display: flex; flex-wrap: wrap; gap: 8px;">
+                        <span style="background: #f0f4f8; color: #475569; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; text-transform: uppercase; font-weight: 700;">
+                            <?php echo htmlspecialchars($row['cuisine_type']); ?>
+                        </span>
+                        <span style="background: #ecfdf5; color: #059669; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; text-transform: uppercase; font-weight: 700;">
+                            <?php echo htmlspecialchars($row['dietary_preference']); ?>
+                        </span>
+                        <span style="background: #fef2f2; color: #dc2626; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; text-transform: uppercase; font-weight: 700;">
+                            <?php echo htmlspecialchars($row['difficulty_level']); ?>
+                        </span>
+                    </div>
+                    
+                    <h3 style="color: var(--primary-color); margin-bottom: 10px; font-family: var(--font-heading); font-size: 1.3rem;">
+                        <?php echo htmlspecialchars($row['title']); ?>
+                    </h3>
+                    
+                    <p style="color: var(--text-dark); font-size: 0.95rem; line-height: 1.6; margin-bottom: 20px; flex-grow: 1;">
+                        <?php echo $snippet; ?>
+                    </p>
+                    
+                    <a href="view_recipe.php?id=<?php echo $row['recipe_id']; ?>" class="btn primary-btn full-width" style="text-align: center; text-decoration: none;">
+                        View Recipe
+                    </a>
+                </div>
+            </div>
+        <?php 
+            } 
+        } else {
+            // Friendly message if they use a filter combination that yields no results
+            echo "<div style='grid-column: 1 / -1; text-align: center; padding: 3rem;'>";
+            echo "<h3>No recipes found</h3>";
+            echo "<p>Try adjusting your filters to discover more culinary creations!</p>";
+            echo "</div>";
+        }
+        ?>
+    </div>
     </section>
+
+    <footer class="site-footer">
+        <div class="footer-content">
+            <div class="footer-logo">FoodFusion</div>
+            <div class="footer-links">
+                <a href="privacy.php">Privacy Policy</a>
+                <a href="terms.php">Terms of Service</a>
+                <a href="contact.php">Contact Us</a>
+            </div>
+           <div class="social-links">
+                <a href="https://facebook.com" target="_blank" class="social-item" aria-label="Facebook">
+                    <span class="social-name">Facebook</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+                </a>
+                
+                <a href="https://instagram.com" target="_blank" class="social-item" aria-label="Instagram">
+                    <span class="social-name">Instagram</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                </a>
+                
+                <a href="https://twitter.com" target="_blank" class="social-item" aria-label="Twitter">
+                    <span class="social-name">Twitter</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg>
+                </a>
+            </div>
+        </div>
+        <div class="copyright">
+            &copy; <?php echo date("Y"); ?> FoodFusion. All rights reserved.
+        </div>
+    </footer>
 
 <?php if(!isset($_SESSION['user_id'])): // Only render the modal if they aren't logged in ?>
     <div id="joinModal" class="modal">
