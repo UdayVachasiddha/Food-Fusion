@@ -13,7 +13,7 @@ $featured_result = $conn->query($featured_query);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FoodFusion | Culinary Creativity</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=<?php echo time(); ?>">
     <link
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Poppins:wght@300;400;600&display=swap"
         rel="stylesheet">
@@ -23,7 +23,7 @@ $featured_result = $conn->query($featured_query);
 
     <nav class="navbar">
         <a href="index.php" class="logo" style="display: flex; align-items: center; text-decoration: none;"><img
-                src="assets/logo.png" alt="FoodFusion Logo" style="height: 55px; width: auto;"></a>
+                src="assets/logo.png" alt="FoodFusion Logo"></a>
         <ul class="nav-links">
             <li><a href="index.php">Home</a></li>
             <li><a href="about.php">About Us</a></li>

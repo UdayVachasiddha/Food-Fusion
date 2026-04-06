@@ -44,7 +44,7 @@ $stmt->close();
 <body>
 
     <nav class="navbar">
-        <a href="index.php" class="logo" style="display: flex; align-items: center; text-decoration: none;"><img src="assets/logo.png" alt="FoodFusion Logo" style="height: 55px; width: auto;"></a>
+        <a href="index.php" class="logo" style="display: flex; align-items: center; text-decoration: none;"><img src="assets/logo.png" alt="FoodFusion Logo"></a>
         <ul class="nav-links">
             <li><a href="index.php">Home</a></li>
             <li><a href="about.php">About Us</a></li>

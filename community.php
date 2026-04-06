@@ -36,7 +36,7 @@ $total_posts = $count_result->fetch_assoc()['total'];
 <body>
 
     <nav class="navbar">
-        <a href="index.php" class="logo" style="display: flex; align-items: center; text-decoration: none;"><img src="assets/logo.png" alt="FoodFusion Logo" style="height: 55px; width: auto;"></a>
+        <a href="index.php" class="logo" style="display: flex; align-items: center; text-decoration: none;"><img src="assets/logo.png" alt="FoodFusion Logo"></a>
         <ul class="nav-links">
             <li><a href="index.php">Home</a></li>
             <li><a href="about.php">About Us</a></li>
@@ -253,6 +253,19 @@ $total_posts = $count_result->fetch_assoc()['total'];
         </div>
     </div>
     <?php endif; ?>
+
+        <!-- --- Success Notification Modal --- -->
+        <div id="successModal" class="modal success-modal">
+            <div class="modal-content">
+                <span class="close-btn">&times;</span>
+                <div class="success-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                </div>
+                <h2 id="successModalTitle">Success!</h2>
+                <p id="successModalMessage">Your content has been published successfully.</p>
+                <button class="btn primary-btn close-modal-btn" style="width: 100%; border-radius: 50px; padding: 12px;">Great!</button>
+            </div>
+        </div>
 
     <script src="main.js?v=<?php echo time(); ?>"></script>
 </body>

@@ -70,27 +70,41 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// --- Modal Error Handling ---
-    // This checks the URL for something like "?error=Invalid Password"
+// --- Success & Error Modal Handling ---
     const urlParams = new URLSearchParams(window.location.search);
     const errorMsg = urlParams.get('error');
+    const successMsg = urlParams.get('success');
 
     if (errorMsg) {
-        // 1. Force the modal to open
         const modal = document.getElementById('joinModal');
         if (modal) modal.style.display = 'flex';
-
-        // 2. Inject the error message into the red box
         const alertBox = document.getElementById('modalAlert');
         if (alertBox) {
             alertBox.style.display = 'block';
             alertBox.className = 'alert alert-error';
-            alertBox.textContent = errorMsg; // Safely displays the PHP error
+            alertBox.textContent = errorMsg;
         }
-        
-        // 3. Clean up the URL so the error doesn't stay there forever if they refresh
         window.history.replaceState({}, document.title, window.location.pathname);
     }
+
+    if (successMsg) {
+        const modal = document.getElementById('successModal');
+        const messagePara = document.getElementById('successModalMessage');
+        if (modal && messagePara) {
+            messagePara.textContent = successMsg;
+            modal.style.display = 'flex';
+        }
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }
+
+    // Handle generic modal refresh on close
+    document.querySelectorAll('.close-modal-btn').forEach(btn => {
+        btn.onclick = function() {
+            const modal = this.closest('.modal');
+            if (modal) modal.style.display = 'none';
+            if (modal && modal.id === 'successModal') window.location.reload();
+        }
+    });
 
 // --- Carousel & Timer Logic ---
 let slideIndex = 0;
@@ -185,11 +199,19 @@ function initializeTimers() {
             .then(data => {
                 messageBox.style.display = 'block';
                 if (data.status === 'success') {
-                    messageBox.className = 'alert alert-success';
-                    messageBox.textContent = data.message;
-                    recipeForm.reset(); // Clear the form
-                    // Reload the page after 1.5 seconds to show the new recipe
-                    setTimeout(() => { window.location.reload(); }, 1500); 
+                    // Show our premium success modal instead of just an alert box
+                    const successModal = document.getElementById('successModal');
+                    const successText = document.getElementById('successModalMessage');
+                    if (successModal && successText) {
+                        successText.textContent = data.message;
+                        successModal.style.display = 'flex';
+                        recipeForm.reset();
+                    } else {
+                        messageBox.className = 'alert alert-success';
+                        messageBox.textContent = data.message;
+                        recipeForm.reset();
+                        setTimeout(() => { window.location.reload(); }, 1500);
+                    }
                 } else {
                     messageBox.className = 'alert alert-error';
                     messageBox.textContent = data.message;

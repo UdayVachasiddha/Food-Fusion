@@ -28,6 +28,55 @@ h1, h2, .logo {
     font-family: var(--font-heading);
 }
 
+/* --- Premium Success Modal Styles --- */
+.success-modal .modal-content {
+    max-width: 450px;
+    text-align: center;
+    padding: 2.5rem;
+    border-top: 5px solid #28a745;
+    animation: modal-entrance 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+}
+
+.success-icon {
+    width: 80px;
+    height: 80px;
+    background: #e8f5e9;
+    color: #28a745;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    font-size: 2.5rem;
+}
+
+.success-modal h2 {
+    color: var(--text-dark);
+    margin-bottom: 1rem;
+    font-family: var(--font-heading);
+}
+
+.success-modal p {
+    color: #666;
+    margin-bottom: 2rem;
+    line-height: 1.6;
+}
+
+@keyframes modal-entrance {
+    from { opacity: 0; transform: scale(0.8) translateY(20px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes checkmark-draw {
+    0% { transform: scale(0); opacity: 0; }
+    50% { transform: scale(1.2); opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.success-icon svg {
+    animation: checkmark-draw 0.6s ease-out forwards;
+}
+
 /* --- Navigation --- */
 .navbar {
     display: flex;
@@ -39,6 +88,7 @@ h1, h2, .logo {
     position: sticky;
     top: 0;
     z-index: 100;
+    isolation: isolate; /* Ensures mix-blend-mode calculates correctly against the backdrop */
 }
 
 .logo {
@@ -53,11 +103,13 @@ h1, h2, .logo {
 .logo img {
     height: 95px !important; /* Made significantly larger for brand presence */
     width: auto !important;
+    display: block;
     mix-blend-mode: multiply; /* Mathematically burns out the pale background box */
-    filter: contrast(1.25) saturate(1.1); /* Makes the orange/red culinary colors pop */
+    filter: contrast(1.15) saturate(1.1); /* Makes the orange/red culinary colors pop */
     transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    margin-top: -10px; /* Counter-balance the height expansion so the navbar doesn't stretch awkwardly */
-    margin-bottom: -10px;
+    margin-top: -12px; /* Counter-balance the height expansion */
+    margin-bottom: -12px;
+    background: transparent;
 }
 
 .logo:hover img {

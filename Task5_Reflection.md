@@ -9,18 +9,17 @@
 
 The following pages were implemented, styled, and tested as part of the FoodFusion platform:
 
-| Page | Description |
-|---|---|
-| **Homepage** (`index.php`) | Full-screen hero banner, featured recipes grid dynamically rendered from MySQL, upcoming events carousel with active countdown timers, and an auto-triggered premium signup modal for guest users |
-| **Recipes Page** (`recipes.php`) | Grid of all user-submitted and seeded recipes rendered from the database, with dynamic image fallback handling when no URL is provided |
-| **Single Recipe View** (`view_recipe.php`) | A clean, focused reading layout fetching per-recipe instructions, ingredients, and metadata individually from the database using the recipe ID URL parameter |
-| **Community Cookbook** (`community.php`) | Community submission hub where logged-in users can publish new recipes with image URL support; all posts render as responsive interactive cards |
-| **Culinary Resources** (`resources_culinary.php`) | Fully dynamic, database-driven page displaying community-uploaded PDF recipe guides, YouTube cooking video links, and written tutorials. Features a secured "Add Resource" modal for authenticated users |
-| **Educational Resources** (`resources_educational.php`) | Mirrors the culinary page architecture but filtered for `educational` database category — food safety guides, nutritional infographics, and articles |
-| **Resource Hub** (`resources.php`) | A clean landing hub presenting two large stylised navigation cards directing users to either the Culinary or Educational sub-pages |
-| **Contact Us** (`contact.php`) | A styled HTML form that securely handles user enquiries, inserting validated data into the `contact_messages` database table |
-| **User Registration Modal** | A premium dual-column glassmorphism popup modal with session-aware visibility — auto-triggered 3 seconds after page load for unauthenticated visitors |
-| **Event Registration Modal** | An inline event signup form available from the homepage carousel, writing participant details to the `event_registrations` table |
+| Page | Screenshot | Description |
+|---|---|---|
+| **Homepage** | ![Homepage](file:///C:/Users/Uday/.gemini/antigravity/brain/d758432b-890b-40a7-b75f-61a6bf0f580a/homepage_1775489371096.png) | Hero banner, featured recipes, and upcoming events with the premium unified logo. |
+| **Registration** | ![Registration Modal](file:///C:/Users/Uday/.gemini/antigravity/brain/d758432b-890b-40a7-b75f-61a6bf0f580a/registration_page_v2_png_1775490812569.png) | The high-end registration modal allowing users to join the culinary community. |
+| **Login** | ![Login Page](file:///C:/Users/Uday/.gemini/antigravity/brain/d758432b-890b-40a7-b75f-61a6bf0f580a/login_page_v2_png_1775490775274.png) | Secure login interface for existing users to access their culinary dashboard. |
+| **Recipes Catalog** | ![Recipes Catalog](file:///C:/Users/Uday/.gemini/antigravity/brain/d758432b-890b-40a7-b75f-61a6bf0f580a/recipes_catalog_1775489417682.png) | Full grid of database-driven recipe cards with dynamic fallback image handling. |
+| **Community Hub (Full)** | ![Community Hub Full](file:///C:/Users/Uday/.gemini/antigravity/brain/d758432b-890b-40a7-b75f-61a6bf0f580a/community_full_logged_in_png_1775490898468.png) | Entire page view of the authenticated Community Cookbook, showcasing the recipe submission form and the live social feed. |
+| **Resource Hub** | ![Resource Hub](file:///C:/Users/Uday/.gemini/antigravity/brain/d758432b-890b-40a7-b75f-61a6bf0f580a/resource_hub_1775489443504.png) | Categorized landing page for Culinary and Educational resource navigation. |
+| **Culinary Resources** | ![Culinary Resources](file:///C:/Users/Uday/.gemini/antigravity/brain/d758432b-890b-40a7-b75f-61a6bf0f580a/culinary_resources_1775489462932.png) | Dedicated page for cooking guides, videos, and articles filtered from the database. |
+| **Event Registration** | ![Event Modal](file:///C:/Users/Uday/.gemini/antigravity/brain/d758432b-890b-40a7-b75f-61a6bf0f580a/event_modal_1775489396946.png) | Interactive registration modal for upcoming cooking workshops and events. |
+| **Contact Us** | ![Contact Page](file:///C:/Users/Uday/.gemini/antigravity/brain/d758432b-890b-40a7-b75f-61a6bf0f580a/contact_page_1775489484305.png) | Secured contact form for user enquiries and platform feedback. |
 
 ---
 

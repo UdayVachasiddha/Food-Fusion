@@ -28,7 +28,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // 3. Ensure image_url column exists (fails silently if it already exists)
-    $conn->query("ALTER TABLE recipes ADD COLUMN image_url VARCHAR(255) DEFAULT NULL");
 
     // 4. Insert into database using Prepared Statements
     $stmt = $conn->prepare("INSERT INTO recipes (user_id, title, image_url, description, cuisine_type, dietary_preference, difficulty_level, instructions) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
