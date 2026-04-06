@@ -1,10 +1,6 @@
 <?php
 session_start();
 require_once 'db_connect.php';
-
-// Fetch all resources from the database
-$query = "SELECT * FROM resources ORDER BY created_at DESC";
-$result = $conn->query($query);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -41,35 +37,49 @@ $result = $conn->query($query);
         </div>
     </header>
 
-    <!-- Resource Hub Links -->
-    <section class="resource-collection" style="padding: 6rem 20px; min-height: 50vh; display: flex; align-items: center; justify-content: center; background: var(--bg-color);">
-        <div class="card-grid" style="grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 40px; width: 100%; max-width: 1000px;">
+    <!-- Culinary Resources Section -->
+    <section class="resource-collection" style="padding: 4rem 20px;">
+        <h2 class="section-title" style="margin-bottom: 10px;">Culinary Resources</h2>
+        <p style="text-align: center; color: #666; max-width: 800px; margin: 0 auto 3rem auto; line-height: 1.6; font-size: 1.1rem;">
+            Providing downloadable recipe cards, cooking tutorials, and instructional videos on various cooking techniques and kitchen hacks.
+        </p>
+        <div class="card-grid">
             
-            <a href="resources_culinary.php" style="text-decoration: none;">
-                <div class="card resource-card" style="padding: 50px 30px; text-align: center; transition: transform 0.3s, box-shadow 0.3s; border-top: 6px solid var(--primary-color);">
-                    <div class="resource-icon-wrapper" style="background: rgba(230, 57, 70, 0.1); color: var(--primary-color); width: 90px; height: 90px; font-size: 40px; margin: 0 auto 25px auto;">
-                        <span class="resource-icon">👨‍🍳</span>
-                    </div>
-                    <div class="card-content">
-                        <h3 style="margin-bottom: 20px; font-size: 1.7rem; color: var(--text-dark); font-family: var(--font-heading);">Culinary Resources</h3>
-                        <p style="color: #666; line-height: 1.7; font-size: 1.05rem;">Explore downloadable recipe cards, instructional videos, and incredibly useful kitchen hacks.</p>
-                        <span style="display: inline-block; margin-top: 25px; color: var(--primary-color); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; font-size: 0.9rem;">View Collection &rarr;</span>
-                    </div>
+            <div class="card resource-card">
+                <div class="resource-icon-wrapper" style="background: rgba(230, 57, 70, 0.1); color: var(--primary-color);">
+                    <span class="resource-icon">📄</span>
                 </div>
-            </a>
+                <div class="card-content" style="text-align: center;">
+                    <span class="badge badge-pdf" style="margin-bottom: 10px; display: inline-block;">PDF Card</span>
+                    <p style="font-size: 0.8rem; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px;">Recipe Collection</p>
+                    <h3 style="margin-bottom: 15px; font-size: 1.3rem;">Mastering the Mother Sauces</h3>
+                    <a href="downloads/mother_sauces.pdf" download="Mastering_The_Mother_Sauces.pdf" class="btn outline-btn full-width" style="text-align: center; display: inline-block; text-decoration: none; box-sizing: border-box;">Download Card</a>
+                </div>
+            </div>
 
-            <a href="resources_educational.php" style="text-decoration: none;">
-                <div class="card resource-card" style="padding: 50px 30px; text-align: center; transition: transform 0.3s, box-shadow 0.3s; border-top: 6px solid #2a9d8f;">
-                    <div class="resource-icon-wrapper" style="background: rgba(42, 157, 143, 0.1); color: #2a9d8f; width: 90px; height: 90px; font-size: 40px; margin: 0 auto 25px auto;">
-                        <span class="resource-icon">🌍</span>
-                    </div>
-                    <div class="card-content">
-                        <h3 style="margin-bottom: 20px; font-size: 1.7rem; color: var(--text-dark); font-family: var(--font-heading);">Educational Resources</h3>
-                        <p style="color: #666; line-height: 1.7; font-size: 1.05rem;">Discover rich infographics and downloadable guides on renewable energy and sustainability.</p>
-                        <span style="display: inline-block; margin-top: 25px; color: #2a9d8f; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; font-size: 0.9rem;">View Collection &rarr;</span>
-                    </div>
+            <div class="card resource-card">
+                <div class="resource-icon-wrapper" style="background: rgba(42, 157, 143, 0.1); color: #2a9d8f;">
+                    <span class="resource-icon">▶️</span>
                 </div>
-            </a>
+                <div class="card-content" style="text-align: center;">
+                    <span class="badge badge-video" style="margin-bottom: 10px; display: inline-block; background: #2a9d8f; color: white;">Video Tutorial</span>
+                    <p style="font-size: 0.8rem; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px;">Cooking Technique</p>
+                    <h3 style="margin-bottom: 15px; font-size: 1.3rem;">Knife Skills: The Basics</h3>
+                    <a href="https://www.youtube.com/watch?v=0kH2PXX3M-I" target="_blank" class="btn outline-btn full-width" style="text-align: center; display: inline-block; text-decoration: none; border-color: #2a9d8f; color: #2a9d8f; box-sizing: border-box;">Watch Video</a>
+                </div>
+            </div>
+
+            <div class="card resource-card">
+                <div class="resource-icon-wrapper" style="background: rgba(244, 162, 97, 0.1); color: #f4a261;">
+                    <span class="resource-icon">💡</span>
+                </div>
+                <div class="card-content" style="text-align: center;">
+                    <span class="badge" style="margin-bottom: 10px; display: inline-block; background: #f4a261; color: white;">Kitchen Hack</span>
+                    <p style="font-size: 0.8rem; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px;">Prep Tips</p>
+                    <h3 style="margin-bottom: 15px; font-size: 1.3rem;">How to Peel Garlic in Seconds</h3>
+                    <a href="https://www.bonappetit.com/story/how-to-peel-garlic" target="_blank" class="btn outline-btn full-width" style="text-align: center; display: inline-block; text-decoration: none; border-color: #f4a261; color: #f4a261; box-sizing: border-box;">Read Tutorial</a>
+                </div>
+            </div>
 
         </div>
     </section>

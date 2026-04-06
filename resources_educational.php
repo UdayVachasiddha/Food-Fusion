@@ -1,17 +1,13 @@
 <?php
 session_start();
 require_once 'db_connect.php';
-
-// Fetch all resources from the database
-$query = "SELECT * FROM resources ORDER BY created_at DESC";
-$result = $conn->query($query);
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Culinary Resources | FoodFusion</title>
+    <title>Educational Resources | FoodFusion</title>
     <link rel="stylesheet" href="style.css?v=<?php echo time(); ?>">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
@@ -34,42 +30,56 @@ $result = $conn->query($query);
         <?php endif; ?>
     </nav>
 
-    <header class="hero resource-hero">
+    <header class="hero resource-hero" style="background-image: linear-gradient(rgba(38, 70, 83, 0.7), rgba(38, 70, 83, 0.7)), url('https://images.unsplash.com/photo-1466611653911-95081537e5b7?auto=format&fit=crop&w=1950&q=80');">
         <div class="hero-content">
-            <h1>Culinary Resources</h1>
-            <p>Expand your knowledge with our free guides, video tutorials, and educational infographics.</p>
+            <h1>Educational Resources</h1>
+            <p>Learn more about renewable energy, sustainability, and how we can power a greener future together.</p>
         </div>
     </header>
 
-    <!-- Resource Hub Links -->
-    <section class="resource-collection" style="padding: 6rem 20px; min-height: 50vh; display: flex; align-items: center; justify-content: center; background: var(--bg-color);">
-        <div class="card-grid" style="grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 40px; width: 100%; max-width: 1000px;">
+    <!-- Educational Resources Section -->
+    <section class="resource-collection" style="background: var(--bg-color); padding: 4rem 20px;">
+        <h2 class="section-title" style="margin-bottom: 10px;">Educational Resources</h2>
+        <p style="text-align: center; color: #666; max-width: 800px; margin: 0 auto 3rem auto; line-height: 1.6; font-size: 1.1rem;">
+            Providing downloadable resources, infographics, and videos on renewable energy topics.
+        </p>
+        <div class="card-grid">
             
-            <a href="resources_culinary.php" style="text-decoration: none;">
-                <div class="card resource-card" style="padding: 50px 30px; text-align: center; transition: transform 0.3s, box-shadow 0.3s; border-top: 6px solid var(--primary-color);">
-                    <div class="resource-icon-wrapper" style="background: rgba(230, 57, 70, 0.1); color: var(--primary-color); width: 90px; height: 90px; font-size: 40px; margin: 0 auto 25px auto;">
-                        <span class="resource-icon">👨‍🍳</span>
-                    </div>
-                    <div class="card-content">
-                        <h3 style="margin-bottom: 20px; font-size: 1.7rem; color: var(--text-dark); font-family: var(--font-heading);">Culinary Resources</h3>
-                        <p style="color: #666; line-height: 1.7; font-size: 1.05rem;">Explore downloadable recipe cards, instructional videos, and incredibly useful kitchen hacks.</p>
-                        <span style="display: inline-block; margin-top: 25px; color: var(--primary-color); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; font-size: 0.9rem;">View Collection &rarr;</span>
-                    </div>
+            <div class="card resource-card">
+                <div class="resource-icon-wrapper" style="background: rgba(38, 70, 83, 0.1); color: #264653;">
+                    <span class="resource-icon">📊</span>
                 </div>
-            </a>
+                <div class="card-content" style="text-align: center;">
+                    <span class="badge badge-info" style="margin-bottom: 10px; display: inline-block; background: #264653; color: white;">Infographic</span>
+                    <p style="font-size: 0.8rem; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px;">Renewable Energy</p>
+                    <h3 style="margin-bottom: 15px; font-size: 1.3rem;">Solar Energy: How it Powers Homes</h3>
+                    <a href="https://images.unsplash.com/photo-1509391366360-2e959784a276?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80" target="_blank" class="btn outline-btn full-width" style="text-align: center; display: inline-block; text-decoration: none; border-color: #264653; color: #264653; box-sizing: border-box;">View Infographic</a>
+                </div>
+            </div>
 
-            <a href="resources_educational.php" style="text-decoration: none;">
-                <div class="card resource-card" style="padding: 50px 30px; text-align: center; transition: transform 0.3s, box-shadow 0.3s; border-top: 6px solid #2a9d8f;">
-                    <div class="resource-icon-wrapper" style="background: rgba(42, 157, 143, 0.1); color: #2a9d8f; width: 90px; height: 90px; font-size: 40px; margin: 0 auto 25px auto;">
-                        <span class="resource-icon">🌍</span>
-                    </div>
-                    <div class="card-content">
-                        <h3 style="margin-bottom: 20px; font-size: 1.7rem; color: var(--text-dark); font-family: var(--font-heading);">Educational Resources</h3>
-                        <p style="color: #666; line-height: 1.7; font-size: 1.05rem;">Discover rich infographics and downloadable guides on renewable energy and sustainability.</p>
-                        <span style="display: inline-block; margin-top: 25px; color: #2a9d8f; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; font-size: 0.9rem;">View Collection &rarr;</span>
-                    </div>
+            <div class="card resource-card">
+                <div class="resource-icon-wrapper" style="background: rgba(42, 157, 143, 0.1); color: #2a9d8f;">
+                    <span class="resource-icon">📄</span>
                 </div>
-            </a>
+                <div class="card-content" style="text-align: center;">
+                    <span class="badge badge-pdf" style="margin-bottom: 10px; display: inline-block; background: #2a9d8f; color: white;">PDF Guide</span>
+                    <p style="font-size: 0.8rem; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px;">Sustainability</p>
+                    <h3 style="margin-bottom: 15px; font-size: 1.3rem;">Wind Power in the Modern Grid</h3>
+                    <a href="downloads/wind_power_guide.pdf" download="Wind_Power_Guide.pdf" class="btn outline-btn full-width" style="text-align: center; display: inline-block; text-decoration: none; border-color: #2a9d8f; color: #2a9d8f; box-sizing: border-box;">Download Guide</a>
+                </div>
+            </div>
+
+            <div class="card resource-card">
+                <div class="resource-icon-wrapper" style="background: rgba(233, 196, 106, 0.2); color: #e9c46a;">
+                    <span class="resource-icon">▶️</span>
+                </div>
+                <div class="card-content" style="text-align: center;">
+                    <span class="badge badge-video" style="margin-bottom: 10px; display: inline-block; background: #e9c46a; color: #333;">Video Series</span>
+                    <p style="font-size: 0.8rem; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px;">Green Tech</p>
+                    <h3 style="margin-bottom: 15px; font-size: 1.3rem;">The Future of Hydropower</h3>
+                    <a href="https://www.youtube.com/watch?v=LqUuG1n9Xv4" target="_blank" class="btn outline-btn full-width" style="text-align: center; display: inline-block; text-decoration: none; border-color: #e9c46a; color: #e9c46a; box-sizing: border-box;">Watch Video</a>
+                </div>
+            </div>
 
         </div>
     </section>
