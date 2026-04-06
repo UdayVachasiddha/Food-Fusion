@@ -83,6 +83,12 @@ function isSelected($filterName, $value) {
                 <button id="openModalBtn" class="btn primary-btn">Join Us</button>
             <?php endif; ?>
         </div>
+
+        <div class="hamburger">
+            <div class="line1"></div>
+            <div class="line2"></div>
+            <div class="line3"></div>
+        </div>
     </nav>
 
     <header class="hero recipe-hero">
