@@ -14,6 +14,7 @@ if (!isset($_SESSION['user_id'])) {
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $user_id = $_SESSION['user_id'];
     $title = trim($_POST['title']);
+    $image_url = trim($_POST['image_url'] ?? '');
     $description = trim($_POST['description']);
     $cuisine = trim($_POST['cuisine_type']);
     $diet = trim($_POST['dietary_preference']);
@@ -26,14 +27,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit();
     }
 
-    // 3. Insert into database using Prepared Statements
-    $stmt = $conn->prepare("INSERT INTO recipes (user_id, title, description, cuisine_type, dietary_preference, difficulty_level, instructions) VALUES (?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("issssss", $user_id, $title, $description, $cuisine, $diet, $difficulty, $instructions);
+    // 3. Ensure image_url column exists (fails silently if it already exists)
+    $conn->query("ALTER TABLE recipes ADD COLUMN image_url VARCHAR(255) DEFAULT NULL");
+
+    // 4. Insert into database using Prepared Statements
+    $stmt = $conn->prepare("INSERT INTO recipes (user_id, title, image_url, description, cuisine_type, dietary_preference, difficulty_level, instructions) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+    
+    if (!$stmt) {
+        echo json_encode(['status' => 'error', 'message' => 'Prepare failed: ' . $conn->error]);
+        exit();
+    }
+
+    $stmt->bind_param("isssssss", $user_id, $title, $image_url, $description, $cuisine, $diet, $difficulty, $instructions);
 
     if ($stmt->execute()) {
         echo json_encode(['status' => 'success', 'message' => 'Recipe published successfully!']);
     } else {
-        echo json_encode(['status' => 'error', 'message' => 'Database error: Could not save recipe.']);
+        echo json_encode(['status' => 'error', 'message' => 'Database error: ' . $stmt->error]);
     }
 
     $stmt->close();

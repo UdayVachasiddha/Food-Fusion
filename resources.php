@@ -2,9 +2,7 @@
 session_start();
 require_once 'db_connect.php';
 
-// Fetch all resources from the database
-$query = "SELECT * FROM resources ORDER BY created_at DESC";
-$result = $conn->query($query);
+// Hub page does not require a global fetch.
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -18,7 +16,7 @@ $result = $conn->query($query);
 <body>
 
     <nav class="navbar">
-        <div class="logo">FoodFusion</div>
+        <a href="index.php" class="logo" style="display: flex; align-items: center; text-decoration: none;"><img src="assets/logo.png" alt="FoodFusion Logo" style="height: 55px; width: auto;"></a>
         <ul class="nav-links">
             <li><a href="index.php">Home</a></li>
             <li><a href="about.php">About Us</a></li>
@@ -41,56 +39,42 @@ $result = $conn->query($query);
         </div>
     </header>
 
-    <section class="resource-collection">
-        <div class="card-grid">
+    <!-- Resource Hub Links -->
+    <section class="resource-collection" style="padding: 6rem 20px; min-height: 50vh; display: flex; align-items: center; justify-content: center; background: var(--bg-color);">
+        <div class="card-grid" style="grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 40px; width: 100%; max-width: 1000px;">
             
-            <?php 
-            if ($result->num_rows > 0) {
-                while($row = $result->fetch_assoc()) { 
-                    
-                    // Determine which icon/color to show based on file type
-                    $file_icon = "📄"; // Default
-                    $badge_class = "badge-pdf";
-                    if ($row['file_type'] == 'Video') {
-                        $file_icon = "▶️";
-                        $badge_class = "badge-video";
-                    } elseif ($row['file_type'] == 'Infographic') {
-                        $file_icon = "📊";
-                        $badge_class = "badge-info";
-                    }
-            ?>
-                <div class="card resource-card">
-                    <div class="resource-icon-wrapper">
-                        <span class="resource-icon"><?php echo $file_icon; ?></span>
+            <a href="resources_culinary.php" style="text-decoration: none;">
+                <div class="card resource-card" style="padding: 50px 30px; text-align: center; transition: transform 0.3s, box-shadow 0.3s; border-top: 6px solid var(--primary-color);">
+                    <div class="resource-icon-wrapper" style="background: rgba(230, 57, 70, 0.1); color: var(--primary-color); width: 90px; height: 90px; font-size: 40px; margin: 0 auto 25px auto;">
+                        <span class="resource-icon">👨‍🍳</span>
                     </div>
-                    
-                    <div class="card-content" style="text-align: center;">
-                        <span class="badge <?php echo $badge_class; ?>" style="margin-bottom: 10px; display: inline-block;">
-                            <?php echo htmlspecialchars($row['file_type']); ?>
-                        </span>
-                        
-                        <p style="font-size: 0.8rem; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px;">
-                            <?php echo str_replace('_', ' ', htmlspecialchars($row['category'])); ?>
-                        </p>
-                        
-                        <h3 style="margin-bottom: 15px; font-size: 1.3rem;"><?php echo htmlspecialchars($row['title']); ?></h3>
-                        
-                        <a href="<?php echo htmlspecialchars($row['file_path']); ?>" target="_blank" class="btn outline-btn full-width">Access Resource</a>
+                    <div class="card-content">
+                        <h3 style="margin-bottom: 20px; font-size: 1.7rem; color: var(--text-dark); font-family: var(--font-heading);">Culinary Resources</h3>
+                        <p style="color: #666; line-height: 1.7; font-size: 1.05rem;">Explore downloadable recipe cards, instructional videos, and incredibly useful kitchen hacks.</p>
+                        <span style="display: inline-block; margin-top: 25px; color: var(--primary-color); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; font-size: 0.9rem;">View Collection &rarr;</span>
                     </div>
                 </div>
-            <?php 
-                } 
-            } else {
-                echo "<p style='text-align: center; width: 100%;'>No resources available at the moment.</p>";
-            }
-            ?>
+            </a>
+
+            <a href="resources_educational.php" style="text-decoration: none;">
+                <div class="card resource-card" style="padding: 50px 30px; text-align: center; transition: transform 0.3s, box-shadow 0.3s; border-top: 6px solid #2a9d8f;">
+                    <div class="resource-icon-wrapper" style="background: rgba(42, 157, 143, 0.1); color: #2a9d8f; width: 90px; height: 90px; font-size: 40px; margin: 0 auto 25px auto;">
+                        <span class="resource-icon">🌍</span>
+                    </div>
+                    <div class="card-content">
+                        <h3 style="margin-bottom: 20px; font-size: 1.7rem; color: var(--text-dark); font-family: var(--font-heading);">Educational Resources</h3>
+                        <p style="color: #666; line-height: 1.7; font-size: 1.05rem;">Discover rich infographics and downloadable guides on renewable energy and sustainability.</p>
+                        <span style="display: inline-block; margin-top: 25px; color: #2a9d8f; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; font-size: 0.9rem;">View Collection &rarr;</span>
+                    </div>
+                </div>
+            </a>
 
         </div>
     </section>
 
     <footer class="site-footer">
         <div class="footer-content">
-            <div class="footer-logo">FoodFusion</div>
+            <div class="footer-logo" style="display: flex; align-items: center; margin-bottom: 15px;"><img src="assets/logo.png" alt="FoodFusion Logo" style="height: 65px; width: auto; filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.2));"></div>
             <div class="footer-links">
                 <a href="privacy.php">Privacy Policy</a>
                 <a href="terms.php">Terms of Service</a>

@@ -42,9 +42,26 @@ h1, h2, .logo {
 }
 
 .logo {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
     font-size: 1.8rem;
     color: var(--primary-color);
     font-weight: 600;
+}
+
+.logo img {
+    height: 95px !important; /* Made significantly larger for brand presence */
+    width: auto !important;
+    mix-blend-mode: multiply; /* Mathematically burns out the pale background box */
+    filter: contrast(1.25) saturate(1.1); /* Makes the orange/red culinary colors pop */
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    margin-top: -10px; /* Counter-balance the height expansion so the navbar doesn't stretch awkwardly */
+    margin-bottom: -10px;
+}
+
+.logo:hover img {
+    transform: scale(1.08) rotate(-3deg);
 }
 
 .nav-links {
@@ -417,6 +434,22 @@ form input {
     font-family: var(--font-heading);
     font-size: 1.5rem;
     color: var(--primary-color);
+}
+
+/* Eliminate the clunky raster image in the dark footer */
+.footer-logo img {
+    display: none !important;
+}
+
+/* Replace it entirely with ultra-premium text typography */
+.footer-logo::after {
+    content: "FoodFusion.";
+    font-family: var(--font-heading);
+    color: #fff;
+    font-size: 2.2rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-shadow: 0 4px 15px rgba(0,0,0,0.5); /* Gives it a slight glow/lift off the dark background */
 }
 
 /* --- Footer Text Links Fix --- */
@@ -811,6 +844,71 @@ form input {
 }
 
 /* =========================================
+   COMMUNITY FORM & GENERAL INPUT STYLES
+   ========================================= */
+
+.community-form {
+    background: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    max-width: 600px;
+    margin: 0 auto; /* Centers the form nicely */
+}
+
+.form-group {
+    margin-bottom: 20px;
+    text-align: left; /* Ensures labels align to the left */
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: var(--text-dark);
+    font-size: 0.95rem;
+}
+
+/* Styles for text inputs, dropdowns, and text areas */
+.form-control {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1rem;
+    color: #333;
+    background-color: #fafafa;
+    transition: all 0.3s ease;
+    box-sizing: border-box; /* Prevents inputs from overflowing */
+}
+
+/* Beautiful focus state when the user clicks inside the box */
+.form-control:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15); /* Soft red glow */
+}
+
+/* Make sure the textarea has a clean font and can only be resized vertically */
+textarea.form-control {
+    resize: vertical;
+    line-height: 1.6;
+}
+
+/* Fix the dropdown arrow alignment */
+select.form-control {
+    cursor: pointer;
+    appearance: none; /* Removes default ugly browser styling */
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23333333%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+    background-repeat: no-repeat;
+    background-position: right 15px top 50%;
+    background-size: 12px auto;
+    padding-right: 40px;
+}
+
+/* =========================================
    CONTACT PAGE STYLES 
    ========================================= */
 
@@ -1066,4 +1164,52 @@ form input {
     line-height: 1.8;
     color: var(--text-dark);
     margin-bottom: 0.5rem;
+}
+
+/* --- Premium Signup Modal --- */
+.premium-modal {
+    display: flex;
+    padding: 0 !important;
+    max-width: 900px !important;
+    width: 90%;
+    overflow: hidden;
+    border-radius: 20px !important;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.3) !important;
+    background: transparent;
+}
+.premium-modal-image {
+    flex: 1.2;
+    position: relative;
+    display: none;
+}
+@media (min-width: 768px) {
+    .premium-modal-image { display: block; }
+}
+.premium-modal-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.premium-modal-overlay {
+    position: absolute;
+    bottom: 0; left: 0; width: 100%;
+    padding: 35px 30px;
+    background: linear-gradient(to top, rgba(0,0,0,0.95), transparent);
+    color: #fff; text-align: left;
+}
+.premium-modal-overlay h3 {
+    font-size: 1.8rem; margin-bottom: 8px; font-family: var(--font-heading);
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+.premium-modal-overlay p {
+    font-size: 1.05rem; opacity: 0.95; line-height: 1.5;
+}
+.premium-modal-form {
+    flex: 1;
+    padding: 50px 45px !important;
+    position: relative;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }

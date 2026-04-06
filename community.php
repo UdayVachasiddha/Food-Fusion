@@ -9,7 +9,20 @@ $query = "
     JOIN users ON recipes.user_id = users.user_id 
     ORDER BY recipes.created_at DESC
 ";
-$result = $conn->query($query);
+$recipes_result = $conn->query($query);
+
+// 1. Fetch ONLY the 3 most recent community posts
+$feed_query = "SELECT cp.*, u.first_name, u.last_name 
+               FROM community_posts cp 
+               JOIN users u ON cp.user_id = u.user_id 
+               ORDER BY cp.created_at DESC 
+               LIMIT 3";
+$feed_result = $conn->query($feed_query);
+
+// 2. Count the total number of posts to see if we need a "Read More" button
+$count_query = "SELECT COUNT(*) as total FROM community_posts";
+$count_result = $conn->query($count_query);
+$total_posts = $count_result->fetch_assoc()['total'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -23,7 +36,7 @@ $result = $conn->query($query);
 <body>
 
     <nav class="navbar">
-        <div class="logo">FoodFusion</div>
+        <a href="index.php" class="logo" style="display: flex; align-items: center; text-decoration: none;"><img src="assets/logo.png" alt="FoodFusion Logo" style="height: 55px; width: auto;"></a>
         <ul class="nav-links">
             <li><a href="index.php">Home</a></li>
             <li><a href="about.php">About Us</a></li>
@@ -55,6 +68,7 @@ $result = $conn->query($query);
                     <div id="formMessage" class="alert" style="display: none;"></div>
                     
                     <input type="text" name="title" placeholder="Recipe Title" required>
+                    <input type="url" name="image_url" placeholder="Recipe Image URL (optional)" class="form-control" style="width: 100%; padding: 12px; margin-bottom: 20px; border-radius: 8px; border: 1px solid #ddd; box-sizing: border-box; font-family: var(--font-body); font-size: 1rem;">
                     <textarea name="description" placeholder="Brief Description..." rows="2" required></textarea>
                     
                     <div class="form-group-3">
@@ -78,6 +92,78 @@ $result = $conn->query($query);
                 </div>
             <?php endif; ?>
         </div>
+
+        <div class="community-feed" style="max-width: 1200px; margin: 4rem auto; padding: 0 20px;">
+            <h2 style="text-align: center; margin-bottom: 2rem; font-family: var(--font-heading); color: var(--primary-color);">Latest from the Community</h2>
+
+            <?php if ($feed_result && $feed_result->num_rows > 0): ?>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px;">
+                    
+                    <?php while($post = $feed_result->fetch_assoc()): ?>
+                        <div class="post-card" style="background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-top: 5px solid var(--primary-color); display: flex; flex-direction: column;">
+                            
+                            <div style="margin-bottom: 15px;">
+                                <span style="background: #fef2f2; color: #dc2626; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; display: inline-block; margin-bottom: 10px;">
+                                    <?php echo htmlspecialchars($post['post_type']); ?>
+                                </span>
+                                <div style="font-size: 0.85rem; color: #666; font-weight: 600;">
+                                    By <?php echo htmlspecialchars($post['first_name'] . ' ' . $post['last_name']); ?>
+                                </div>
+                                <div style="font-size: 0.8rem; color: #999; margin-top: 3px;">
+                                    <?php echo date('F j, Y', strtotime($post['created_at'])); ?>
+                                </div>
+                            </div>
+
+                            <h3 style="margin-bottom: 15px; font-size: 1.25rem; color: var(--text-dark); font-family: var(--font-heading);">
+                                <?php echo htmlspecialchars($post['title']); ?>
+                            </h3>
+                            
+                            <p style="color: #444; line-height: 1.6; font-size: 0.95rem; margin-bottom: 20px; flex-grow: 1; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                <?php echo nl2br(htmlspecialchars($post['content'])); ?>
+                            </p>
+                            
+                        </div>
+                    <?php endwhile; ?>
+                    
+                </div>
+
+                <?php if ($total_posts > 3): ?>
+                    <div style="text-align: center; margin-top: 3rem;">
+                        <a href="all_community_posts.php" class="btn primary-btn" style="padding: 12px 35px; border-radius: 50px; text-decoration: none; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;">
+                            View All <?php echo $total_posts; ?> Posts &rarr;
+                        </a>
+                    </div>
+                <?php endif; ?>
+
+            <?php else: ?>
+                <div style="text-align: center; padding: 3rem; background: #fff; border-radius: 12px;">
+                    <p style="font-size: 1.1rem; color: #666;">No posts yet. Be the first to share your culinary wisdom!</p>
+                </div>
+            <?php endif; ?>
+        </div>
+
+        <form action="submit_post.php" method="POST" class="community-form">
+            <div class="form-group">
+                <label for="post_type">What would you like to share?</label>
+                <select name="post_type" id="post_type" class="form-control" required>
+                    <option value="Recipe">Favourite Recipe</option>
+                    <option value="Tip">Cooking Tip</option>
+                    <option value="Experience">Culinary Experience</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="title">Title</label>
+                <input type="text" name="title" id="title" class="form-control" placeholder="e.g., My Grandma's Lasagna OR How to dice an onion..." required>
+            </div>
+
+            <div class="form-group">
+                <label for="content">The Details (Ingredients, Instructions, or Story)</label>
+                <textarea name="content" id="content" rows="6" class="form-control" placeholder="Share your recipe steps, your best kitchen hack, or a fun cooking story..." required></textarea>
+            </div>
+
+            <button type="submit" class="btn primary-btn full-width" style="margin-top: 10px;">Publish Post</button>
+        </form>
     </section>
 
     <section class="recipe-collection" style="background: var(--bg-color);">
@@ -85,8 +171,8 @@ $result = $conn->query($query);
         <div class="card-grid">
             
             <?php 
-            if ($result->num_rows > 0) {
-                while($row = $result->fetch_assoc()) { 
+            if ($recipes_result && $recipes_result->num_rows > 0) {
+                while($row = $recipes_result->fetch_assoc()): 
             ?>
                 <div class="card recipe-card">
                     <div class="card-content" style="border-top: 4px solid var(--primary-color);">
@@ -103,7 +189,7 @@ $result = $conn->query($query);
                     </div>
                 </div>
             <?php 
-                } 
+                endwhile;
             } else {
                 echo "<p style='text-align: center; width: 100%;'>No community recipes yet. Be the first to submit!</p>";
             }
@@ -113,7 +199,7 @@ $result = $conn->query($query);
 
     <footer class="site-footer">
         <div class="footer-content">
-            <div class="footer-logo">FoodFusion</div>
+            <div class="footer-logo" style="display: flex; align-items: center; margin-bottom: 15px;"><img src="assets/logo.png" alt="FoodFusion Logo" style="height: 65px; width: auto; filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.2));"></div>
             <div class="footer-links">
                 <a href="privacy.php">Privacy Policy</a>
                 <a href="terms.php">Terms of Service</a>
