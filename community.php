@@ -56,6 +56,12 @@ $total_posts = $count_result->fetch_assoc()['total'];
                 <button id="openModalBtn" class="btn primary-btn">Join Us</button>
             <?php endif; ?>
         </div>
+
+        <div class="hamburger">
+            <div class="line1"></div>
+            <div class="line2"></div>
+            <div class="line3"></div>
+        </div>
     </nav>
 
     <header class="hero recipe-hero" style="background-image: linear-gradient(rgba(29, 53, 87, 0.7), rgba(29, 53, 87, 0.7)), url('https://images.unsplash.com/photo-1547592180-85f173990554?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');">
