@@ -9,6 +9,7 @@ $query = "
     JOIN users ON recipes.user_id = users.user_id 
     ORDER BY recipes.created_at DESC
 ";
+$recipes_result = $conn->query($query);
 
 // 1. Fetch ONLY the 3 most recent community posts
 $feed_query = "SELECT cp.*, u.first_name, u.last_name 
@@ -169,10 +170,8 @@ $total_posts = $count_result->fetch_assoc()['total'];
         <div class="card-grid">
             
             <?php 
-            // Added a safety check to ensure $feed_result isn't null before checking rows
-            if ($feed_result && $feed_result->num_rows > 0) {
-                // Updated to use the correct $feed_result variable
-                while($row = $feed_result->fetch_assoc()) { } 
+            if ($recipes_result && $recipes_result->num_rows > 0) {
+                while($row = $recipes_result->fetch_assoc()): 
             ?>
                 <div class="card recipe-card">
                     <div class="card-content" style="border-top: 4px solid var(--primary-color);">
@@ -189,7 +188,7 @@ $total_posts = $count_result->fetch_assoc()['total'];
                     </div>
                 </div>
             <?php 
-                
+                endwhile;
             } else {
                 echo "<p style='text-align: center; width: 100%;'>No community recipes yet. Be the first to submit!</p>";
             }

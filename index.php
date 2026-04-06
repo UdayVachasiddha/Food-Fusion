@@ -141,7 +141,8 @@ $featured_result = $conn->query($featured_query);
                         <div class="event-details">
                             <h3>Mastering French Sauces</h3>
                             <p>Online Workshop</p>
-                            <div class="countdown-timer" data-date="2026-03-15T10:00:00"></div>
+                            <div class="countdown-timer" data-date="2026-06-15T10:00:00"></div>
+                            <button class="btn outline-btn" style="margin-top: 15px; padding: 5px 15px; font-size: 0.9em;" onclick="registerForEvent('Mastering French Sauces')">Register Now</button>
                         </div>
                     </div>
                 </div>
@@ -152,7 +153,8 @@ $featured_result = $conn->query($featured_query);
                         <div class="event-details">
                             <h3>Sourdough for Beginners</h3>
                             <p>Community Kitchen</p>
-                            <div class="countdown-timer" data-date="2026-03-22T14:00:00"></div>
+                            <div class="countdown-timer" data-date="2026-06-22T14:00:00"></div>
+                            <button class="btn outline-btn" style="margin-top: 15px; padding: 5px 15px; font-size: 0.9em;" onclick="registerForEvent('Sourdough for Beginners')">Register Now</button>
                         </div>
                     </div>
                 </div>
@@ -163,7 +165,8 @@ $featured_result = $conn->query($featured_query);
                         <div class="event-details">
                             <h3>Global Spices Masterclass</h3>
                             <p>Live Webinar</p>
-                            <div class="countdown-timer" data-date="2026-04-05T18:00:00"></div>
+                            <div class="countdown-timer" data-date="2026-07-05T18:00:00"></div>
+                            <button class="btn outline-btn" style="margin-top: 15px; padding: 5px 15px; font-size: 0.9em;" onclick="registerForEvent('Global Spices Masterclass')">Register Now</button>
                         </div>
                     </div>
                 </div>
@@ -203,6 +206,37 @@ $featured_result = $conn->query($featured_query);
         </div>
     </footer>
 
+    <!-- Event Registration Form Modal -->
+    <div id="eventFormModal" class="modal" style="display: none; align-items: center; justify-content: center;">
+        <div class="modal-content" style="max-width: 400px; padding: 35px 30px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
+            <span class="close-btn" onclick="document.getElementById('eventFormModal').style.display='none'" style="position: absolute; top: 15px; right: 20px; font-size: 24px; cursor: pointer;">&times;</span>
+            <h2 style="margin-bottom: 5px; font-family: var(--font-heading); color: var(--text-dark); text-align: center;">Registration</h2>
+            <h4 id="formEventNameDisplay" style="text-align: center; color: var(--primary-color); margin-bottom: 25px; font-size: 1.1em; font-weight: normal;"></h4>
+            
+            <form id="eventRegistrationForm">
+                <input type="hidden" name="event_name" id="hiddenEventName">
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <input type="text" name="username" placeholder="Pick a Username" class="form-control" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ccc; font-size: 1rem;" required>
+                </div>
+                <div class="form-group" style="margin-bottom: 25px;">
+                    <input type="email" name="email" placeholder="Your Email Address" class="form-control" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ccc; font-size: 1rem;" required>
+                </div>
+                <button type="submit" id="submitEventBtn" class="btn primary-btn" style="width: 100%; border-radius: 50px; font-weight: 600; font-size: 1.1em; padding: 12px; cursor: pointer;">Complete Registration</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Event Success Modal -->
+    <div id="eventModal" class="modal" style="display: none; align-items: center; justify-content: center;">
+        <div class="modal-content" style="text-align: center; max-width: 400px; padding: 35px 30px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
+            <span class="close-btn" onclick="document.getElementById('eventModal').style.display='none'" style="position: absolute; top: 15px; right: 20px; font-size: 24px; cursor: pointer;">&times;</span>
+            <div id="eventModalIcon" style="font-size: 54px; color: #28a745; margin-bottom: 20px; line-height: 1;">&#10004;</div>
+            <h2 id="eventModalTitle" style="margin-bottom: 15px; font-family: var(--font-heading); color: var(--text-dark);">Registered!</h2>
+            <p id="eventModalMessage" style="color: #555; line-height: 1.6; margin-bottom: 25px; font-size: 1.05em;">You have successfully registered for the event.</p>
+            <button class="btn primary-btn" style="width: 100%; border-radius: 50px; font-weight: 600; font-size: 1.1em; padding: 12px;" onclick="document.getElementById('eventModal').style.display='none'">Awesome!</button>
+        </div>
+    </div>
+
     <div id="cookieConsent" class="cookie-banner" style="display: none;">
         <div class="cookie-content">
             <p>We use cookies to improve your experience, serve personalized recipes, and analyze site traffic. By clicking "Accept All", you agree to our use of cookies.</p>
@@ -213,6 +247,6 @@ $featured_result = $conn->query($featured_query);
         </div>
     </div>
 
-    <script src="main.js"></script>
+    <script src="main.js?v=<?php echo time(); ?>"></script>
 </body>
 </html>

@@ -186,3 +186,67 @@ function initializeTimers() {
             });
         });
     }
+
+// --- Event Registration Logic ---
+window.registerForEvent = function(eventName) {
+    const formModal = document.getElementById('eventFormModal');
+    const hiddenEventName = document.getElementById('hiddenEventName');
+    const formEventNameDisplay = document.getElementById('formEventNameDisplay');
+    
+    if (formModal && hiddenEventName && formEventNameDisplay) {
+        hiddenEventName.value = eventName;
+        formEventNameDisplay.textContent = eventName;
+        formModal.style.display = 'flex';
+    }
+};
+
+const eventRegistrationForm = document.getElementById('eventRegistrationForm');
+if (eventRegistrationForm) {
+    eventRegistrationForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const submitBtn = document.getElementById('submitEventBtn');
+        const originalText = submitBtn.textContent;
+        submitBtn.textContent = 'Registering...';
+        submitBtn.disabled = true;
+        
+        const formData = new FormData(eventRegistrationForm);
+        const eventName = formData.get('event_name');
+
+        fetch('register_event.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
+            
+            if (data.status === 'success') {
+                document.getElementById('eventFormModal').style.display = 'none';
+                eventRegistrationForm.reset();
+                
+                // Show success modal
+                const modal = document.getElementById('eventModal');
+                const modalMessage = document.getElementById('eventModalMessage');
+                const modalTitle = document.getElementById('eventModalTitle');
+                
+                if (modal && modalMessage) {
+                    modalTitle.textContent = "Registration Confirmed!";
+                    modalMessage.innerHTML = `You have successfully reserved your spot for:<br><br><strong style="color: var(--primary-color); font-size: 1.1em;">${eventName}</strong><br><br>We'll email you the details shortly!`;
+                    modal.style.display = 'flex';
+                } else {
+                    alert('Successfully registered!');
+                }
+            } else {
+                alert('Error: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
+            alert('A network error occurred.');
+        });
+    });
+}
