@@ -19,6 +19,33 @@ function togglePasswordVisibility(inputId, btnElement) {
 
 // 2. Modal and Cookie Logic
 document.addEventListener('DOMContentLoaded', () => {
+    // --- Theme Management Logic ---
+    const htmlElement = document.documentElement;
+    const themeToggle = document.getElementById('theme-toggle');
+    
+    // 1. Initial State: Load from LocalStorage or System Preference
+    const savedTheme = localStorage.getItem('theme');
+    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    
+    // Choose the best theme to start with
+    const initialTheme = savedTheme || (systemPrefersDark ? 'dark' : 'light');
+    htmlElement.setAttribute('data-theme', initialTheme);
+
+    if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = htmlElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            htmlElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            
+            // Add a subtle rotation animation for better feel
+            themeToggle.style.transition = 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+            themeToggle.style.transform = 'rotate(360deg)';
+            setTimeout(() => { themeToggle.style.transform = 'rotate(0deg)'; }, 500);
+        });
+    }
+
     startCarousel();
     initializeTimers();
     const modal = document.getElementById('joinModal');
