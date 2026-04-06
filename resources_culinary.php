@@ -14,7 +14,7 @@ require_once 'db_connect.php';
 <body>
 
     <nav class="navbar">
-        <div class="logo">FoodFusion</div>
+        <a href="index.php" class="logo" style="display: flex; align-items: center; text-decoration: none;"><img src="assets/logo.png" alt="FoodFusion Logo" style="height: 55px; width: auto;"></a>
         <ul class="nav-links">
             <li><a href="index.php">Home</a></li>
             <li><a href="about.php">About Us</a></li>
@@ -39,54 +39,72 @@ require_once 'db_connect.php';
 
     <!-- Culinary Resources Section -->
     <section class="resource-collection" style="padding: 4rem 20px;">
-        <h2 class="section-title" style="margin-bottom: 10px;">Culinary Resources</h2>
-        <p style="text-align: center; color: #666; max-width: 800px; margin: 0 auto 3rem auto; line-height: 1.6; font-size: 1.1rem;">
-            Providing downloadable recipe cards, cooking tutorials, and instructional videos on various cooking techniques and kitchen hacks.
-        </p>
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; max-width: 1200px; margin: 0 auto 2rem auto; flex-wrap: wrap; gap: 15px;">
+            <div style="flex: 1; min-width: 300px;">
+                <h2 class="section-title" style="margin-bottom: 10px; text-align: left;">Culinary Resources</h2>
+                <p style="color: #666; font-size: 1.1rem; max-width: 700px;">
+                    Providing community-driven recipe cards, cooking tutorials, and instructional videos on various cooking techniques and kitchen hacks.
+                </p>
+            </div>
+            <div>
+                <?php if(isset($_SESSION['user_id'])): ?>
+                    <button onclick="document.getElementById('uploadResourceModal').style.display='flex'" class="btn primary-btn" style="border-radius: 30px; box-shadow: 0 4px 15px rgba(230,57,70,0.3);">+ Add Resource</button>
+                <?php else: ?>
+                    <button onclick="alert('Please Login or Join Us to upload a resource!')" class="btn outline-btn" style="border-radius: 30px;">+ Add Resource</button>
+                <?php endif; ?>
+            </div>
+        </div>
+
+        <?php if(isset($_GET['success'])): ?>
+            <div class="alert success" style="max-width: 1200px; margin: 0 auto 20px auto; padding: 15px; background: #e8f5e9; color: #2e7d32; border-radius: 8px; border-left: 5px solid #2e7d32;"><?php echo htmlspecialchars($_GET['success']); ?></div>
+        <?php endif; ?>
+        <?php if(isset($_GET['error'])): ?>
+            <div class="alert error" style="max-width: 1200px; margin: 0 auto 20px auto; padding: 15px; background: #ffebee; color: #c62828; border-radius: 8px; border-left: 5px solid #c62828;"><?php echo htmlspecialchars($_GET['error']); ?></div>
+        <?php endif; ?>
+
         <div class="card-grid">
-            
-            <div class="card resource-card">
-                <div class="resource-icon-wrapper" style="background: rgba(230, 57, 70, 0.1); color: var(--primary-color);">
-                    <span class="resource-icon">📄</span>
-                </div>
-                <div class="card-content" style="text-align: center;">
-                    <span class="badge badge-pdf" style="margin-bottom: 10px; display: inline-block;">PDF Card</span>
-                    <p style="font-size: 0.8rem; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px;">Recipe Collection</p>
-                    <h3 style="margin-bottom: 15px; font-size: 1.3rem;">Mastering the Mother Sauces</h3>
-                    <a href="downloads/mother_sauces.pdf" download="Mastering_The_Mother_Sauces.pdf" class="btn outline-btn full-width" style="text-align: center; display: inline-block; text-decoration: none; box-sizing: border-box;">Download Card</a>
-                </div>
-            </div>
+            <?php
+            $resources_sql = "SELECT * FROM resources WHERE category = 'culinary' ORDER BY resource_id DESC";
+            $resources_res = $conn->query($resources_sql);
 
-            <div class="card resource-card">
-                <div class="resource-icon-wrapper" style="background: rgba(42, 157, 143, 0.1); color: #2a9d8f;">
-                    <span class="resource-icon">▶️</span>
+            if ($resources_res && $resources_res->num_rows > 0) {
+                while($row = $resources_res->fetch_assoc()) {
+                    $type = $row['type'];
+                    $title = htmlspecialchars($row['title']);
+                    $desc = htmlspecialchars($row['description']);
+                    $link = htmlspecialchars($row['file_path_or_url']);
+                    
+                    if($type === 'pdf') {
+                         $badgeClass = 'badge-pdf'; $badgeText = 'PDF Card'; $icon = '📄'; $btnText = 'Download File'; $btnColor = 'var(--primary-color)'; $bgFade = 'rgba(230, 57, 70, 0.1)';
+                    } elseif($type === 'video') {
+                         $badgeClass = 'badge-video'; $badgeText = 'Video Tutorial'; $icon = '▶️'; $btnText = 'Watch Video'; $btnColor = '#2a9d8f'; $bgFade = 'rgba(42, 157, 143, 0.1)';
+                    } else {
+                         $badgeClass = ''; $badgeText = 'Article'; $icon = '💡'; $btnText = 'Read Article'; $btnColor = '#f4a261'; $bgFade = 'rgba(244, 162, 97, 0.1)';
+                    }
+            ?>
+                <div class="card resource-card">
+                    <div class="resource-icon-wrapper" style="background: <?php echo $bgFade; ?>; color: <?php echo $btnColor; ?>;">
+                        <span class="resource-icon"><?php echo $icon; ?></span>
+                    </div>
+                    <div class="card-content" style="text-align: center;">
+                        <span class="badge <?php echo $badgeClass; ?>" style="margin-bottom: 10px; display: inline-block; <?php echo ($type!='pdf' ? "background: $btnColor; color: white;" : ""); ?>"><?php echo $badgeText; ?></span>
+                        <p style="font-size: 0.8rem; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px;"><?php echo $desc; ?></p>
+                        <h3 style="margin-bottom: 15px; font-size: 1.3rem;"><?php echo $title; ?></h3>
+                        <a href="<?php echo $link; ?>" <?php echo ($type === 'pdf' ? 'download' : 'target="_blank"'); ?> class="btn outline-btn full-width" style="text-align: center; display: inline-block; text-decoration: none; border-color: <?php echo $btnColor; ?>; color: <?php echo $btnColor; ?>; box-sizing: border-box;"><?php echo $btnText; ?></a>
+                    </div>
                 </div>
-                <div class="card-content" style="text-align: center;">
-                    <span class="badge badge-video" style="margin-bottom: 10px; display: inline-block; background: #2a9d8f; color: white;">Video Tutorial</span>
-                    <p style="font-size: 0.8rem; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px;">Cooking Technique</p>
-                    <h3 style="margin-bottom: 15px; font-size: 1.3rem;">Knife Skills: The Basics</h3>
-                    <a href="https://www.youtube.com/watch?v=0kH2PXX3M-I" target="_blank" class="btn outline-btn full-width" style="text-align: center; display: inline-block; text-decoration: none; border-color: #2a9d8f; color: #2a9d8f; box-sizing: border-box;">Watch Video</a>
-                </div>
-            </div>
-
-            <div class="card resource-card">
-                <div class="resource-icon-wrapper" style="background: rgba(244, 162, 97, 0.1); color: #f4a261;">
-                    <span class="resource-icon">💡</span>
-                </div>
-                <div class="card-content" style="text-align: center;">
-                    <span class="badge" style="margin-bottom: 10px; display: inline-block; background: #f4a261; color: white;">Kitchen Hack</span>
-                    <p style="font-size: 0.8rem; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px;">Prep Tips</p>
-                    <h3 style="margin-bottom: 15px; font-size: 1.3rem;">How to Peel Garlic in Seconds</h3>
-                    <a href="https://www.bonappetit.com/story/how-to-peel-garlic" target="_blank" class="btn outline-btn full-width" style="text-align: center; display: inline-block; text-decoration: none; border-color: #f4a261; color: #f4a261; box-sizing: border-box;">Read Tutorial</a>
-                </div>
-            </div>
-
+            <?php 
+                }
+            } else {
+                echo "<p style='grid-column: 1 / -1; text-align: center; padding: 40px; background: #fff; border-radius: 10px;'>No resources found. Be the first to share one!</p>";
+            }
+            ?>
         </div>
     </section>
 
     <footer class="site-footer">
         <div class="footer-content">
-            <div class="footer-logo">FoodFusion</div>
+            <div class="footer-logo" style="display: flex; align-items: center; margin-bottom: 15px;"><img src="assets/logo.png" alt="FoodFusion Logo" style="height: 65px; width: auto; filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.2));"></div>
             <div class="footer-links">
                 <a href="privacy.php">Privacy Policy</a>
                 <a href="terms.php">Terms of Service</a>
@@ -113,6 +131,60 @@ require_once 'db_connect.php';
             &copy; <?php echo date("Y"); ?> FoodFusion. All rights reserved.
         </div>
     </footer>
+
+    <?php if(isset($_SESSION['user_id'])): ?>
+    <div id="uploadResourceModal" class="modal" style="align-items: center; justify-content: center; z-index: 1000;">
+        <div class="modal-content" style="max-width: 500px; padding: 40px; border-radius: 15px;">
+            <span class="close-btn" onclick="document.getElementById('uploadResourceModal').style.display='none'" style="position:absolute; top:20px; right:25px;">&times;</span>
+            <h2 style="font-family: var(--font-heading); color: var(--primary-color); margin-bottom: 5px;">Share a Resource</h2>
+            <p style="margin-bottom: 25px; color: #666;">Help the community grow by sharing useful content.</p>
+            
+            <form action="submit_resource.php" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="category" value="culinary">
+                <input type="hidden" name="return_url" value="resources_culinary.php">
+                
+                <input type="text" name="title" placeholder="Resource Title (e.g. Knife Skills 101)" required style="width: 100%; margin-bottom: 15px; padding: 12px; border-radius: 8px; border: 1px solid #ccc;">
+                
+                <input type="text" name="description" placeholder="Category Tag (e.g. Cooking Technique)" required style="width: 100%; margin-bottom: 15px; padding: 12px; border-radius: 8px; border: 1px solid #ccc;">
+                
+                <select name="type" id="resourceTypeSelect_cul" onchange="toggleResourceInput('cul')" required style="width: 100%; margin-bottom: 15px; padding: 12px; border-radius: 8px; border: 1px solid #ccc; background: white;">
+                    <option value="" disabled selected>Select Resource Type</option>
+                    <option value="video">Video Tutorial (YouTube/Vimeo)</option>
+                    <option value="article">Web Article / Blog</option>
+                    <option value="pdf">PDF Document Upload</option>
+                </select>
+
+                <div id="urlInputContainer_cul" style="display: none; margin-bottom: 15px;">
+                    <input type="url" name="resource_url" id="resourceUrl_cul" placeholder="https://example.com/..." style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ccc;">
+                </div>
+
+                <div id="fileInputContainer_cul" style="display: none; margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 8px; color: #555; font-weight: 500;">Select PDF File:</label>
+                    <input type="file" name="resource_file" id="resourceFile_cul" accept="application/pdf" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc; background: #f9f9f9;">
+                </div>
+
+                <button type="submit" class="btn primary-btn full-width" style="border-radius: 30px; font-weight: 600; padding: 14px; margin-top: 5px;">Upload Resource</button>
+            </form>
+        </div>
+    </div>
+    <script>
+        function toggleResourceInput(uid) {
+            const type = document.getElementById('resourceTypeSelect_' + uid).value;
+            const urlContainer = document.getElementById('urlInputContainer_' + uid);
+            const urlInput = document.getElementById('resourceUrl_' + uid);
+            const fileContainer = document.getElementById('fileInputContainer_' + uid);
+            const fileInput = document.getElementById('resourceFile_' + uid);
+            
+            if (type === 'pdf') {
+                urlContainer.style.display = 'none'; urlInput.required = false; urlInput.value = '';
+                fileContainer.style.display = 'block'; fileInput.required = true;
+            } else {
+                fileContainer.style.display = 'none'; fileInput.required = false; fileInput.value = '';
+                urlContainer.style.display = 'block'; urlInput.required = true;
+            }
+        }
+    </script>
+    <?php endif; ?>
 
     <?php if(!isset($_SESSION['user_id'])): ?>
     <div id="joinModal" class="modal">

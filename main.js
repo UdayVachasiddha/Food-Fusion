@@ -23,19 +23,29 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeTimers();
     const modal = document.getElementById('joinModal');
     const btn = document.getElementById('openModalBtn');
-    const span = document.querySelector('.close-btn');
     const cookieBanner = document.getElementById('cookieConsent');
     const acceptCookiesBtn = document.getElementById('acceptCookies');
 
-    if(btn) {
+    if (btn && modal) {
         btn.onclick = function() { modal.style.display = "flex"; }
     }
-    if(span) {
-        span.onclick = function() { modal.style.display = "none"; }
-    }
-    window.onclick = function(event) {
-        if (event.target == modal) { modal.style.display = "none"; }
-    }
+
+    // Globally handle ANY close button for ANY modal
+    document.querySelectorAll('.close-btn').forEach(closeBtn => {
+        closeBtn.addEventListener('click', function() {
+            const parentModal = this.closest('.modal');
+            if (parentModal) {
+                parentModal.style.display = 'none';
+            }
+        });
+    });
+
+    // Globally close modals when clicking outside of them
+    window.addEventListener('click', function(event) {
+        if (event.target.classList.contains('modal')) {
+            event.target.style.display = 'none';
+        }
+    });
     if (cookieBanner && acceptCookiesBtn) {
         if (!localStorage.getItem('cookiesAccepted')) {
             cookieBanner.style.display = 'flex';
@@ -45,6 +55,17 @@ document.addEventListener('DOMContentLoaded', () => {
         acceptCookiesBtn.onclick = function() {
             localStorage.setItem('cookiesAccepted', 'true');
             cookieBanner.style.display = 'none';
+        }
+    }
+
+    // --- Premium Auto-Popup Logic for Guests (Homepage ONLY) ---
+    const homePremiumModal = document.querySelector('.premium-modal');
+    if (modal && homePremiumModal) {
+        if (!sessionStorage.getItem('guestSignupSeen')) {
+            setTimeout(() => {
+                modal.style.display = 'flex';
+                sessionStorage.setItem('guestSignupSeen', 'true');
+            }, 3000); // 3 seconds after loading
         }
     }
 });

@@ -13,7 +13,7 @@ session_start();
 <body>
 
     <nav class="navbar">
-        <div class="logo">FoodFusion</div>
+        <a href="index.php" class="logo" style="display: flex; align-items: center; text-decoration: none;"><img src="assets/logo.png" alt="FoodFusion Logo" style="height: 55px; width: auto;"></a>
         <ul class="nav-links">
             <li><a href="index.php">Home</a></li>
             <li><a href="about.php" style="color: var(--primary-color);">About Us</a></li>
@@ -85,7 +85,7 @@ session_start();
 
     <footer class="site-footer">
         <div class="footer-content">
-            <div class="footer-logo">FoodFusion</div>
+            <div class="footer-logo" style="display: flex; align-items: center; margin-bottom: 15px;"><img src="assets/logo.png" alt="FoodFusion Logo" style="height: 65px; width: auto; filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.2));"></div>
             <div class="footer-links">
                 <a href="privacy.php">Privacy Policy</a>
                 <a href="terms.php">Terms of Service</a>
