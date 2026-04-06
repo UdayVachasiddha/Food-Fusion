@@ -1,7 +1,7 @@
 <?php
 $host = "localhost"; 
 $username = "root";      
-$password = "Uday@2006";  // Put the exact password you used for Workbench here!
+$password = "Uday@2006";  
 $dbname = "foodfusion";  
 
 $conn = new mysqli($host, $username, $password, $dbname);
