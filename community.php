@@ -74,7 +74,7 @@ $total_posts = $count_result->fetch_assoc()['total'];
                     <div id="formMessage" class="alert" style="display: none;"></div>
                     
                     <input type="text" name="title" placeholder="Recipe Title" required>
-                    <input type="url" name="image_url" placeholder="Recipe Image URL (optional)" class="form-control" style="width: 100%; padding: 12px; margin-bottom: 20px; border-radius: 8px; border: 1px solid #ddd; box-sizing: border-box; font-family: var(--font-body); font-size: 1rem;">
+                <input type="url" name="image_url" placeholder="Recipe Image URL (optional)">
                     <textarea name="description" placeholder="Brief Description..." rows="2" required></textarea>
                     
                     <div class="form-group-3">

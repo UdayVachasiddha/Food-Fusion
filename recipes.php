@@ -147,7 +147,7 @@ function isSelected($filterName, $value) {
                 // 3. Truncate instructions for the description teaser
                 $snippet = htmlspecialchars(substr($row['instructions'], 0, 90)) . '...';
         ?>
-            <div class="card recipe-card" style="border-radius: 8px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); background: #fff; display: flex; flex-direction: column;">
+            <div class="card recipe-card">
                 <img src="<?php echo $image; ?>" alt="<?php echo htmlspecialchars($row['title']); ?>" style="width: 100%; height: 200px; object-fit: cover;">
                 
                 <div class="card-content" style="padding: 20px; flex-grow: 1; display: flex; flex-direction: column;">

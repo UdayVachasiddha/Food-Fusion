@@ -137,8 +137,7 @@ $featured_result = $conn->query($featured_query);
                     // Truncate instructions
                     $snippet = htmlspecialchars(substr($row['instructions'], 0, 90)) . '...';
                     ?>
-                    <div class="card"
-                        style="border-radius: 8px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); background: #fff;">
+                    <div class="card">
                         <img src="<?php echo $image; ?>" alt="<?php echo htmlspecialchars($row['title']); ?>"
                             style="width: 100%; height: 200px; object-fit: cover;">
 
