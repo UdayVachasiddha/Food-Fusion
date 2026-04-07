@@ -30,14 +30,34 @@ require_once 'db_connect.php';
 
         <div style="display: flex; align-items: center; gap: 10px;">
             <button id="theme-toggle" class="theme-switch" aria-label="Toggle Dark Mode">
-                <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-                <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+                <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                </svg>
             </button>
-            <?php if(isset($_SESSION['user_id'])): ?>
+            <?php if (isset($_SESSION['user_id'])): ?>
                 <a href="logout.php" class="btn outline-btn">Logout</a>
             <?php else: ?>
                 <button id="openModalBtn" class="btn primary-btn">Join Us</button>
             <?php endif; ?>
+        </div>
+
+        <div class="hamburger">
+            <div class="line1"></div>
+            <div class="line2"></div>
+            <div class="line3"></div>
         </div>
     </nav>
 
@@ -51,27 +71,37 @@ require_once 'db_connect.php';
 
     <!-- Educational Resources Section -->
     <section class="resource-collection" style="background: var(--bg-color); padding: 4rem 20px;">
-        <div style="display: flex; justify-content: space-between; align-items: flex-end; max-width: 1200px; margin: 0 auto 2rem auto; flex-wrap: wrap; gap: 15px;">
+        <div
+            style="display: flex; justify-content: space-between; align-items: flex-end; max-width: 1200px; margin: 0 auto 2rem auto; flex-wrap: wrap; gap: 15px;">
             <div style="flex: 1; min-width: 300px;">
                 <h2 class="section-title" style="margin-bottom: 10px; text-align: left;">Educational Resources</h2>
                 <p style="color: #666; font-size: 1.1rem; max-width: 700px;">
-                    Providing community-driven downloadable resources, infographics, and videos on global safety and nutritional awareness.
+                    Providing community-driven downloadable resources, infographics, and videos on global safety and
+                    nutritional awareness.
                 </p>
             </div>
             <div>
-                <?php if(isset($_SESSION['user_id'])): ?>
-                    <button onclick="document.getElementById('uploadResourceModal_edu').style.display='flex'" class="btn primary-btn" style="border-radius: 30px; box-shadow: 0 4px 15px rgba(38,70,83,0.3); background: #264653; border-color: #264653;">+ Add Resource</button>
+                <?php if (isset($_SESSION['user_id'])): ?>
+                    <button onclick="document.getElementById('uploadResourceModal_edu').style.display='flex'"
+                        class="btn primary-btn"
+                        style="border-radius: 30px; box-shadow: 0 4px 15px rgba(38,70,83,0.3); background: #264653; border-color: #264653;">+
+                        Add Resource</button>
                 <?php else: ?>
-                    <button onclick="alert('Please Login or Join Us to upload a resource!')" class="btn outline-btn" style="border-radius: 30px; color: #264653; border-color: #264653;">+ Add Resource</button>
+                    <button onclick="alert('Please Login or Join Us to upload a resource!')" class="btn outline-btn"
+                        style="border-radius: 30px; color: #264653; border-color: #264653;">+ Add Resource</button>
                 <?php endif; ?>
             </div>
         </div>
 
-        <?php if(isset($_GET['success'])): ?>
-            <div class="alert success" style="max-width: 1200px; margin: 0 auto 20px auto; padding: 15px; background: #e8f5e9; color: #2e7d32; border-radius: 8px; border-left: 5px solid #2e7d32;"><?php echo htmlspecialchars($_GET['success']); ?></div>
+        <?php if (isset($_GET['success'])): ?>
+            <div class="alert success"
+                style="max-width: 1200px; margin: 0 auto 20px auto; padding: 15px; background: #e8f5e9; color: #2e7d32; border-radius: 8px; border-left: 5px solid #2e7d32;">
+                <?php echo htmlspecialchars($_GET['success']); ?></div>
         <?php endif; ?>
-        <?php if(isset($_GET['error'])): ?>
-            <div class="alert error" style="max-width: 1200px; margin: 0 auto 20px auto; padding: 15px; background: #ffebee; color: #c62828; border-radius: 8px; border-left: 5px solid #c62828;"><?php echo htmlspecialchars($_GET['error']); ?></div>
+        <?php if (isset($_GET['error'])): ?>
+            <div class="alert error"
+                style="max-width: 1200px; margin: 0 auto 20px auto; padding: 15px; background: #ffebee; color: #c62828; border-radius: 8px; border-left: 5px solid #c62828;">
+                <?php echo htmlspecialchars($_GET['error']); ?></div>
         <?php endif; ?>
 
         <div class="card-grid">
@@ -80,32 +110,53 @@ require_once 'db_connect.php';
             $resources_res = $conn->query($resources_sql);
 
             if ($resources_res && $resources_res->num_rows > 0) {
-                while($row = $resources_res->fetch_assoc()) {
+                while ($row = $resources_res->fetch_assoc()) {
                     $type = $row['type'];
                     $title = htmlspecialchars($row['title']);
                     $desc = htmlspecialchars($row['description']);
                     $link = htmlspecialchars($row['file_path_or_url']);
-                    
-                    if($type === 'pdf') {
-                         $badgeClass = 'badge-pdf'; $badgeText = 'PDF Guide'; $icon = '📄'; $btnText = 'Download Guide'; $btnColor = '#2a9d8f'; $bgFade = 'rgba(42, 157, 143, 0.1)';
-                    } elseif($type === 'video') {
-                         $badgeClass = 'badge-video'; $badgeText = 'Video Series'; $icon = '▶️'; $btnText = 'Watch Video'; $btnColor = '#e9c46a'; $bgFade = 'rgba(233, 196, 106, 0.2)';
+
+                    if ($type === 'pdf') {
+                        $badgeClass = 'badge-pdf';
+                        $badgeText = 'PDF Guide';
+                        $icon = '📄';
+                        $btnText = 'Download Guide';
+                        $btnColor = '#2a9d8f';
+                        $bgFade = 'rgba(42, 157, 143, 0.1)';
+                    } elseif ($type === 'video') {
+                        $badgeClass = 'badge-video';
+                        $badgeText = 'Video Series';
+                        $icon = '▶️';
+                        $btnText = 'Watch Video';
+                        $btnColor = '#e9c46a';
+                        $bgFade = 'rgba(233, 196, 106, 0.2)';
                     } else {
-                         $badgeClass = 'badge-info'; $badgeText = 'Infographic/Article'; $icon = '📊'; $btnText = 'View Resource'; $btnColor = '#264653'; $bgFade = 'rgba(38, 70, 83, 0.1)';
+                        $badgeClass = 'badge-info';
+                        $badgeText = 'Infographic/Article';
+                        $icon = '📊';
+                        $btnText = 'View Resource';
+                        $btnColor = '#264653';
+                        $bgFade = 'rgba(38, 70, 83, 0.1)';
                     }
-            ?>
-                <div class="card resource-card">
-                    <div class="resource-icon-wrapper" style="background: <?php echo $bgFade; ?>; color: <?php echo $btnColor; ?>;">
-                        <span class="resource-icon"><?php echo $icon; ?></span>
+                    ?>
+                    <div class="card resource-card">
+                        <div class="resource-icon-wrapper"
+                            style="background: <?php echo $bgFade; ?>; color: <?php echo $btnColor; ?>;">
+                            <span class="resource-icon"><?php echo $icon; ?></span>
+                        </div>
+                        <div class="card-content" style="text-align: center;">
+                            <span class="badge <?php echo $badgeClass; ?>"
+                                style="margin-bottom: 10px; display: inline-block; background: <?php echo $btnColor; ?>; color: <?php echo ($type == 'video' ? '#333' : 'white'); ?>;"><?php echo $badgeText; ?></span>
+                            <p
+                                style="font-size: 0.8rem; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px;">
+                                <?php echo $desc; ?></p>
+                            <h3 style="margin-bottom: 15px; font-size: 1.3rem; line-height: 1.4;"><?php echo $title; ?></h3>
+                            <a href="<?php echo $link; ?>" <?php echo ($type === 'pdf' ? 'download' : 'target="_blank"'); ?>
+                                class="btn outline-btn full-width"
+                                style="text-align: center; display: inline-block; text-decoration: none; border-color: <?php echo $btnColor; ?>; color: <?php echo $btnColor; ?>; box-sizing: border-box;"><?php echo $btnText; ?></a>
+                        </div>
                     </div>
-                    <div class="card-content" style="text-align: center;">
-                        <span class="badge <?php echo $badgeClass; ?>" style="margin-bottom: 10px; display: inline-block; background: <?php echo $btnColor; ?>; color: <?php echo ($type=='video'?'#333':'white'); ?>;"><?php echo $badgeText; ?></span>
-                        <p style="font-size: 0.8rem; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px;"><?php echo $desc; ?></p>
-                        <h3 style="margin-bottom: 15px; font-size: 1.3rem; line-height: 1.4;"><?php echo $title; ?></h3>
-                        <a href="<?php echo $link; ?>" <?php echo ($type === 'pdf' ? 'download' : 'target="_blank"'); ?> class="btn outline-btn full-width" style="text-align: center; display: inline-block; text-decoration: none; border-color: <?php echo $btnColor; ?>; color: <?php echo $btnColor; ?>; box-sizing: border-box;"><?php echo $btnText; ?></a>
-                    </div>
-                </div>
-            <?php 
+                <?php
                 }
             } else {
                 echo "<p style='grid-column: 1 / -1; text-align: center; padding: 40px; background: #fff; border-radius: 10px;'>No resources found. Be the first to share one!</p>";
@@ -159,58 +210,68 @@ require_once 'db_connect.php';
         </div>
     </footer>
 
-    <?php if(isset($_SESSION['user_id'])): ?>
-    <div id="uploadResourceModal_edu" class="modal" style="align-items: center; justify-content: center; z-index: 1000;">
-        <div class="modal-content" style="max-width: 500px; padding: 40px; border-radius: 15px;">
-            <span class="close-btn" onclick="document.getElementById('uploadResourceModal_edu').style.display='none'" style="position:absolute; top:20px; right:25px;">&times;</span>
-            <h2 style="font-family: var(--font-heading); color: #264653; margin-bottom: 5px;">Share a Resource</h2>
-            <p style="margin-bottom: 25px; color: #666;">Help the community grow by sharing educational content.</p>
-            
-            <form action="submit_resource.php" method="POST" enctype="multipart/form-data">
-                <input type="hidden" name="category" value="educational">
-                <input type="hidden" name="return_url" value="resources_educational.php">
-                
-                <input type="text" name="title" placeholder="Resource Title (e.g. Safety Guide 2026)" required style="width: 100%; margin-bottom: 15px; padding: 12px; border-radius: 8px; border: 1px solid #ccc;">
-                
-                <input type="text" name="description" placeholder="Category Tag (e.g. Nutrition)" required style="width: 100%; margin-bottom: 15px; padding: 12px; border-radius: 8px; border: 1px solid #ccc;">
-                
-                <select name="type" id="resourceTypeSelect_edu" onchange="toggleResourceInput('edu')" required style="width: 100%; margin-bottom: 15px; padding: 12px; border-radius: 8px; border: 1px solid #ccc; background: white;">
-                    <option value="" disabled selected>Select Resource Type</option>
-                    <option value="video">Video Tutorial (YouTube/Vimeo)</option>
-                    <option value="article">Web Article / Blog</option>
-                    <option value="pdf">PDF Document Upload</option>
-                </select>
+    <?php if (isset($_SESSION['user_id'])): ?>
+        <div id="uploadResourceModal_edu" class="modal"
+            style="align-items: center; justify-content: center; z-index: 1000;">
+            <div class="modal-content" style="max-width: 500px; padding: 40px; border-radius: 15px;">
+                <span class="close-btn" onclick="document.getElementById('uploadResourceModal_edu').style.display='none'"
+                    style="position:absolute; top:20px; right:25px;">&times;</span>
+                <h2 style="font-family: var(--font-heading); color: #264653; margin-bottom: 5px;">Share a Resource</h2>
+                <p style="margin-bottom: 25px; color: #666;">Help the community grow by sharing educational content.</p>
 
-                <div id="urlInputContainer_edu" style="display: none; margin-bottom: 15px;">
-                    <input type="url" name="resource_url" id="resourceUrl_edu" placeholder="https://example.com/..." style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ccc;">
-                </div>
+                <form action="submit_resource.php" method="POST" enctype="multipart/form-data">
+                    <input type="hidden" name="category" value="educational">
+                    <input type="hidden" name="return_url" value="resources_educational.php">
 
-                <div id="fileInputContainer_edu" style="display: none; margin-bottom: 15px;">
-                    <label style="display: block; margin-bottom: 8px; color: #555; font-weight: 500;">Select PDF File:</label>
-                    <input type="file" name="resource_file" id="resourceFile_edu" accept="application/pdf" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc; background: #f9f9f9;">
-                </div>
+                    <input type="text" name="title" placeholder="Resource Title (e.g. Safety Guide 2026)" required
+                        style="width: 100%; margin-bottom: 15px; padding: 12px; border-radius: 8px; border: 1px solid #ccc;">
 
-                <button type="submit" class="btn" style="border-radius: 30px; font-weight: 600; padding: 14px; margin-top: 5px; width: 100%; background: #264653; color: white; border: none; cursor: pointer;">Upload Resource</button>
-            </form>
+                    <input type="text" name="description" placeholder="Category Tag (e.g. Nutrition)" required
+                        style="width: 100%; margin-bottom: 15px; padding: 12px; border-radius: 8px; border: 1px solid #ccc;">
+
+                    <select name="type" id="resourceTypeSelect_edu" onchange="toggleResourceInput('edu')" required
+                        style="width: 100%; margin-bottom: 15px; padding: 12px; border-radius: 8px; border: 1px solid #ccc; background: white;">
+                        <option value="" disabled selected>Select Resource Type</option>
+                        <option value="video">Video Tutorial (YouTube/Vimeo)</option>
+                        <option value="article">Web Article / Blog</option>
+                        <option value="pdf">PDF Document Upload</option>
+                    </select>
+
+                    <div id="urlInputContainer_edu" style="display: none; margin-bottom: 15px;">
+                        <input type="url" name="resource_url" id="resourceUrl_edu" placeholder="https://example.com/..."
+                            style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ccc;">
+                    </div>
+
+                    <div id="fileInputContainer_edu" style="display: none; margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 8px; color: #555; font-weight: 500;">Select PDF
+                            File:</label>
+                        <input type="file" name="resource_file" id="resourceFile_edu" accept="application/pdf"
+                            style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc; background: #f9f9f9;">
+                    </div>
+
+                    <button type="submit" class="btn"
+                        style="border-radius: 30px; font-weight: 600; padding: 14px; margin-top: 5px; width: 100%; background: #264653; color: white; border: none; cursor: pointer;">Upload
+                        Resource</button>
+                </form>
+            </div>
         </div>
-    </div>
-    <script>
-        function toggleResourceInput(uid) {
-            const type = document.getElementById('resourceTypeSelect_' + uid).value;
-            const urlContainer = document.getElementById('urlInputContainer_' + uid);
-            const urlInput = document.getElementById('resourceUrl_' + uid);
-            const fileContainer = document.getElementById('fileInputContainer_' + uid);
-            const fileInput = document.getElementById('resourceFile_' + uid);
-            
-            if (type === 'pdf') {
-                urlContainer.style.display = 'none'; urlInput.required = false; urlInput.value = '';
-                fileContainer.style.display = 'block'; fileInput.required = true;
-            } else {
-                fileContainer.style.display = 'none'; fileInput.required = false; fileInput.value = '';
-                urlContainer.style.display = 'block'; urlInput.required = true;
+        <script>
+            function toggleResourceInput(uid) {
+                const type = document.getElementById('resourceTypeSelect_' + uid).value;
+                const urlContainer = document.getElementById('urlInputContainer_' + uid);
+                const urlInput = document.getElementById('resourceUrl_' + uid);
+                const fileContainer = document.getElementById('fileInputContainer_' + uid);
+                const fileInput = document.getElementById('resourceFile_' + uid);
+
+                if (type === 'pdf') {
+                    urlContainer.style.display = 'none'; urlInput.required = false; urlInput.value = '';
+                    fileContainer.style.display = 'block'; fileInput.required = true;
+                } else {
+                    fileContainer.style.display = 'none'; fileInput.required = false; fileInput.value = '';
+                    urlContainer.style.display = 'block'; urlInput.required = true;
+                }
             }
-        }
-    </script>
+        </script>
     <?php endif; ?>
 
     <?php if (!isset($_SESSION['user_id'])): ?>

@@ -34,17 +34,22 @@ $stmt->close();
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($recipe['title']); ?> | FoodFusion</title>
     <link rel="stylesheet" href="style.css?v=<?php echo time(); ?>">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Poppins:wght@300;400;600&display=swap"
+        rel="stylesheet">
 </head>
+
 <body>
 
     <nav class="navbar">
-        <a href="index.php" class="logo" style="display: flex; align-items: center; text-decoration: none;"><img src="assets/logo.png" alt="FoodFusion Logo"></a>
+        <a href="index.php" class="logo" style="display: flex; align-items: center; text-decoration: none;"><img
+                src="assets/logo.png" alt="FoodFusion Logo"></a>
         <ul class="nav-links">
             <li><a href="index.php">Home</a></li>
             <li><a href="about.php">About Us</a></li>
@@ -52,41 +57,63 @@ $stmt->close();
             <li><a href="community.php">Community</a></li>
             <li><a href="resources.php">Resources</a></li>
         </ul>
-        
+
         <div style="display: flex; align-items: center; gap: 10px;">
             <button id="theme-toggle" class="theme-switch" aria-label="Toggle Dark Mode">
-                <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-                <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+                <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                </svg>
             </button>
-            <?php if(isset($_SESSION['user_id'])): ?>
+            <?php if (isset($_SESSION['user_id'])): ?>
                 <a href="logout.php" class="btn outline-btn">Logout</a>
             <?php else: ?>
                 <button id="openModalBtn" class="btn primary-btn">Join Us</button>
             <?php endif; ?>
         </div>
+
+        <div class="hamburger">
+            <div class="line1"></div>
+            <div class="line2"></div>
+            <div class="line3"></div>
+        </div>
     </nav>
 
     <main class="single-recipe-container">
-        
+
         <a href="recipes.php" class="back-link">&larr; Back to Recipes</a>
 
         <div class="single-recipe-header">
             <h1><?php echo htmlspecialchars($recipe['title']); ?></h1>
-            
+
             <p class="recipe-author">
                 <?php if ($recipe['user_id'] === NULL): ?>
                     Curated by <strong>FoodFusion Experts</strong>
                 <?php else: ?>
-                    Submitted by <strong><?php echo htmlspecialchars($recipe['first_name'] . " " . $recipe['last_name']); ?></strong>
+                    Submitted by
+                    <strong><?php echo htmlspecialchars($recipe['first_name'] . " " . $recipe['last_name']); ?></strong>
                 <?php endif; ?>
             </p>
 
             <div class="recipe-badges justify-center">
                 <span class="badge badge-cuisine"><?php echo htmlspecialchars($recipe['cuisine_type']); ?></span>
                 <span class="badge badge-diet"><?php echo htmlspecialchars($recipe['dietary_preference']); ?></span>
-                <span class="badge badge-difficulty <?php echo strtolower($recipe['difficulty_level']); ?>"><?php echo htmlspecialchars($recipe['difficulty_level']); ?></span>
+                <span
+                    class="badge badge-difficulty <?php echo strtolower($recipe['difficulty_level']); ?>"><?php echo htmlspecialchars($recipe['difficulty_level']); ?></span>
             </div>
-            
+
             <p class="single-recipe-desc"><?php echo htmlspecialchars($recipe['description']); ?></p>
         </div>
 
@@ -101,33 +128,39 @@ $stmt->close();
 
     </main>
 
-<?php if(!isset($_SESSION['user_id'])): // Only render the modal if they aren't logged in ?>
-    <div id="joinModal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn">&times;</span>
-            <h2>Join FoodFusion</h2>
-            <p>Create your account to start sharing and saving recipes.</p>
-            <form id="registerForm" action="register_process.php" method="POST">
-                <div class="form-group">
-                    <input type="text" name="first_name" placeholder="First Name" required>
-                    <input type="text" name="last_name" placeholder="Last Name" required>
-                </div>
-                <input type="email" name="email" placeholder="Email Address" required>
-                <div class="password-wrapper">
-                    <input type="password" name="password" id="regPassword" placeholder="Password" required>
-                    <button type="button" class="toggle-password" onclick="togglePasswordVisibility('regPassword', this)">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-                    </button>
-                </div>
-                <button type="submit" class="btn primary-btn full-width">Sign Up</button>
-                <p style="margin-top: 15px; font-size: 0.9em; text-align: center;">
-                    Already have an account? <a href="login.php" style="color: var(--primary-color);">Log in here</a>.
-                </p>
-            </form>
+    <?php if (!isset($_SESSION['user_id'])): // Only render the modal if they aren't logged in ?>
+        <div id="joinModal" class="modal">
+            <div class="modal-content">
+                <span class="close-btn">&times;</span>
+                <h2>Join FoodFusion</h2>
+                <p>Create your account to start sharing and saving recipes.</p>
+                <form id="registerForm" action="register_process.php" method="POST">
+                    <div class="form-group">
+                        <input type="text" name="first_name" placeholder="First Name" required>
+                        <input type="text" name="last_name" placeholder="Last Name" required>
+                    </div>
+                    <input type="email" name="email" placeholder="Email Address" required>
+                    <div class="password-wrapper">
+                        <input type="password" name="password" id="regPassword" placeholder="Password" required>
+                        <button type="button" class="toggle-password"
+                            onclick="togglePasswordVisibility('regPassword', this)">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                    </div>
+                    <button type="submit" class="btn primary-btn full-width">Sign Up</button>
+                    <p style="margin-top: 15px; font-size: 0.9em; text-align: center;">
+                        Already have an account? <a href="login.php" style="color: var(--primary-color);">Log in here</a>.
+                    </p>
+                </form>
+            </div>
         </div>
-    </div>
     <?php endif; ?>
 
     <script src="main.js?v=<?php echo time(); ?>"></script>
 </body>
+
 </html>

@@ -33,6 +33,12 @@ session_start();
                 <button id="openModalBtn" class="btn primary-btn">Join Us</button>
             <?php endif; ?>
         </div>
+
+        <div class="hamburger">
+            <div class="line1"></div>
+            <div class="line2"></div>
+            <div class="line3"></div>
+        </div>
     </nav>
 
     <header class="hero" style="height: 25vh; background: linear-gradient(rgba(29, 53, 87, 0.9), rgba(29, 53, 87, 0.9));">
