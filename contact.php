@@ -1,6 +1,16 @@
 <?php
 session_start();
 require_once 'db_connect.php';
+require_once 'config.php'; // SMTP Credentials
+
+// PHPMailer Classes
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+use PHPMailer\PHPMailer\SMTP;
+
+require 'libs/PHPMailer/src/Exception.php';
+require 'libs/PHPMailer/src/PHPMailer.php';
+require 'libs/PHPMailer/src/SMTP.php';
 
 $success_msg = '';
 $error_msg = '';
@@ -23,7 +33,50 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->bind_param("ssss", $name, $email, $subject_type, $message);
 
         if ($stmt->execute()) {
-            $success_msg = "Thank you! Your message has been sent successfully. Our team will get back to you soon.";
+            // --- Automated Acknowledgement via Gmail SMTP (PHPMailer) ---
+            $mail = new PHPMailer(true);
+
+            try {
+                // Server settings
+                $mail->isSMTP();
+                $mail->Host       = SMTP_HOST;
+                $mail->SMTPAuth   = true;
+                $mail->Username   = SMTP_USER;
+                $mail->Password   = SMTP_PASS;
+                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                $mail->Port       = SMTP_PORT;
+
+                // Recipients
+                $mail->setFrom(SMTP_USER, SMTP_FROM_NAME);
+                $mail->addAddress($email, $name); 
+
+                // Content
+                $mail->isHTML(true);
+                $mail->Subject = "Acknowledgement: Your Enquiry to FoodFusion";
+                
+                $mail->Body = "
+                <html>
+                <body style='font-family: Arial, sans-serif; line-height: 1.6; color: #333;'>
+                    <div style='max-width: 600px; margin: 0 auto; border: 1px solid #eee; padding: 20px; border-radius: 10px;'>
+                        <h2 style='color: #E63946;'>Hello $name,</h2>
+                        <p>Thank you for reaching out to <strong>FoodFusion</strong>!</p>
+                        <p>We have successfully received your <strong>$subject_type</strong>. Our team is already reviewing your request and will get back to you within 24-48 business hours.</p>
+                        <hr style='border: 0; border-top: 1px solid #eee; margin: 20px 0;'>
+                        <p style='font-size: 0.9em; color: #777;'>
+                            This is an automated acknowledgement from your Gmail-powered SMTP service. There is no need to reply to this email.
+                        </p>
+                        <p>Happy Cooking,<br><strong>Team FoodFusion</strong></p>
+                    </div>
+                </body>
+                </html>
+                ";
+
+                $mail->send();
+                $success_msg = "Thank you! Your message was sent, and an acknowledgement has been sent to your email via Gmail SMTP.";
+            } catch (Exception $e) {
+                // If mail fails, we still show success for the message submission but log the error
+                $success_msg = "Thank you! Your message was saved, but we couldn't send the automated email. Error: " . $mail->ErrorInfo;
+            }
         } else {
             $error_msg = "Oops! Something went wrong. Please try again later.";
         }
