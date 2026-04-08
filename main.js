@@ -19,23 +19,60 @@ function togglePasswordVisibility(inputId, btnElement) {
 
 // 2. Modal and Cookie Logic
 document.addEventListener('DOMContentLoaded', () => {
+    // --- Theme Management Logic ---
+    const htmlElement = document.documentElement;
+    const themeToggle = document.getElementById('theme-toggle');
+    
+    // 1. Initial State: Load from LocalStorage or System Preference
+    const savedTheme = localStorage.getItem('theme');
+    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    
+    // Choose the best theme to start with
+    const initialTheme = savedTheme || (systemPrefersDark ? 'dark' : 'light');
+    htmlElement.setAttribute('data-theme', initialTheme);
+
+    if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = htmlElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            htmlElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            
+            // Add a subtle rotation animation for better feel
+            themeToggle.style.transition = 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+            themeToggle.style.transform = 'rotate(360deg)';
+            setTimeout(() => { themeToggle.style.transform = 'rotate(0deg)'; }, 500);
+        });
+    }
+
     startCarousel();
     initializeTimers();
     const modal = document.getElementById('joinModal');
     const btn = document.getElementById('openModalBtn');
-    const span = document.querySelector('.close-btn');
     const cookieBanner = document.getElementById('cookieConsent');
     const acceptCookiesBtn = document.getElementById('acceptCookies');
 
-    if(btn) {
+    if (btn && modal) {
         btn.onclick = function() { modal.style.display = "flex"; }
     }
-    if(span) {
-        span.onclick = function() { modal.style.display = "none"; }
-    }
-    window.onclick = function(event) {
-        if (event.target == modal) { modal.style.display = "none"; }
-    }
+
+    // Globally handle ANY close button for ANY modal
+    document.querySelectorAll('.close-btn').forEach(closeBtn => {
+        closeBtn.addEventListener('click', function() {
+            const parentModal = this.closest('.modal');
+            if (parentModal) {
+                parentModal.style.display = 'none';
+            }
+        });
+    });
+
+    // Globally close modals when clicking outside of them
+    window.addEventListener('click', function(event) {
+        if (event.target.classList.contains('modal')) {
+            event.target.style.display = 'none';
+        }
+    });
     if (cookieBanner && acceptCookiesBtn) {
         if (!localStorage.getItem('cookiesAccepted')) {
             cookieBanner.style.display = 'flex';
@@ -47,7 +84,82 @@ document.addEventListener('DOMContentLoaded', () => {
             cookieBanner.style.display = 'none';
         }
     }
+
+    // --- Premium Auto-Popup Logic for Guests (Homepage ONLY) ---
+    const homePremiumModal = document.querySelector('.premium-modal');
+    if (modal && homePremiumModal) {
+        if (!sessionStorage.getItem('guestSignupSeen')) {
+            setTimeout(() => {
+                modal.style.display = 'flex';
+                sessionStorage.setItem('guestSignupSeen', 'true');
+            }, 3000); // 3 seconds after loading
+        }
+    }
+
+    // --- Mobile Navbar (Hamburger Toggle) ---
+    const navSlide = () => {
+        const hamburger = document.querySelector('.hamburger');
+        const nav = document.querySelector('.nav-links');
+        const navLinks = document.querySelectorAll('.nav-links li');
+
+        if (hamburger && nav) {
+            hamburger.addEventListener('click', () => {
+                // Toggle Nav
+                nav.classList.toggle('nav-active');
+
+                // Animate Links
+                navLinks.forEach((link, index) => {
+                    if (link.style.animation) {
+                        link.style.animation = '';
+                    } else {
+                        link.style.animation = `navLinkFade 0.5s ease forwards ${index / 7 + 0.3}s`;
+                    }
+                });
+
+                // Hamburger Animation
+                hamburger.classList.toggle('toggle');
+            });
+        }
+    };
+
+    navSlide();
 });
+
+// --- Success & Error Modal Handling ---
+    const urlParams = new URLSearchParams(window.location.search);
+    const errorMsg = urlParams.get('error');
+    const successMsg = urlParams.get('success');
+
+    if (errorMsg) {
+        const modal = document.getElementById('joinModal');
+        if (modal) modal.style.display = 'flex';
+        const alertBox = document.getElementById('modalAlert');
+        if (alertBox) {
+            alertBox.style.display = 'block';
+            alertBox.className = 'alert alert-error';
+            alertBox.textContent = errorMsg;
+        }
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }
+
+    if (successMsg) {
+        const modal = document.getElementById('successModal');
+        const messagePara = document.getElementById('successModalMessage');
+        if (modal && messagePara) {
+            messagePara.textContent = successMsg;
+            modal.style.display = 'flex';
+        }
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }
+
+    // Handle generic modal refresh on close
+    document.querySelectorAll('.close-modal-btn').forEach(btn => {
+        btn.onclick = function() {
+            const modal = this.closest('.modal');
+            if (modal) modal.style.display = 'none';
+            if (modal && modal.id === 'successModal') window.location.reload();
+        }
+    });
 
 // --- Carousel & Timer Logic ---
 let slideIndex = 0;
@@ -142,11 +254,19 @@ function initializeTimers() {
             .then(data => {
                 messageBox.style.display = 'block';
                 if (data.status === 'success') {
-                    messageBox.className = 'alert alert-success';
-                    messageBox.textContent = data.message;
-                    recipeForm.reset(); // Clear the form
-                    // Reload the page after 1.5 seconds to show the new recipe
-                    setTimeout(() => { window.location.reload(); }, 1500); 
+                    // Show our premium success modal instead of just an alert box
+                    const successModal = document.getElementById('successModal');
+                    const successText = document.getElementById('successModalMessage');
+                    if (successModal && successText) {
+                        successText.textContent = data.message;
+                        successModal.style.display = 'flex';
+                        recipeForm.reset();
+                    } else {
+                        messageBox.className = 'alert alert-success';
+                        messageBox.textContent = data.message;
+                        recipeForm.reset();
+                        setTimeout(() => { window.location.reload(); }, 1500);
+                    }
                 } else {
                     messageBox.className = 'alert alert-error';
                     messageBox.textContent = data.message;
@@ -164,3 +284,67 @@ function initializeTimers() {
             });
         });
     }
+
+// --- Event Registration Logic ---
+window.registerForEvent = function(eventName) {
+    const formModal = document.getElementById('eventFormModal');
+    const hiddenEventName = document.getElementById('hiddenEventName');
+    const formEventNameDisplay = document.getElementById('formEventNameDisplay');
+    
+    if (formModal && hiddenEventName && formEventNameDisplay) {
+        hiddenEventName.value = eventName;
+        formEventNameDisplay.textContent = eventName;
+        formModal.style.display = 'flex';
+    }
+};
+
+const eventRegistrationForm = document.getElementById('eventRegistrationForm');
+if (eventRegistrationForm) {
+    eventRegistrationForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const submitBtn = document.getElementById('submitEventBtn');
+        const originalText = submitBtn.textContent;
+        submitBtn.textContent = 'Registering...';
+        submitBtn.disabled = true;
+        
+        const formData = new FormData(eventRegistrationForm);
+        const eventName = formData.get('event_name');
+
+        fetch('register_event.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
+            
+            if (data.status === 'success') {
+                document.getElementById('eventFormModal').style.display = 'none';
+                eventRegistrationForm.reset();
+                
+                // Show success modal
+                const modal = document.getElementById('eventModal');
+                const modalMessage = document.getElementById('eventModalMessage');
+                const modalTitle = document.getElementById('eventModalTitle');
+                
+                if (modal && modalMessage) {
+                    modalTitle.textContent = "Registration Confirmed!";
+                    modalMessage.innerHTML = `You have successfully reserved your spot for:<br><br><strong style="color: var(--primary-color); font-size: 1.1em;">${eventName}</strong><br><br>We'll email you the details shortly!`;
+                    modal.style.display = 'flex';
+                } else {
+                    alert('Successfully registered!');
+                }
+            } else {
+                alert('Error: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
+            alert('A network error occurred.');
+        });
+    });
+}

@@ -2,42 +2,41 @@
 session_start();
 require_once 'db_connect.php';
 
-// 1. Check if an ID was passed in the URL and if it's a valid number
-if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
-    // If someone tries to just type view_recipe.php with no ID, kick them back
-    header("Location: recipes.php");
-    exit();
+$success_msg = '';
+$error_msg = '';
+
+// Process the contact form when it's submitted
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $name = trim($_POST['name']);
+    $email = trim($_POST['email']);
+    $subject_type = $_POST['subject_type'];
+    $message = trim($_POST['message']);
+
+    // Basic Validation
+    if (empty($name) || empty($email) || empty($subject_type) || empty($message)) {
+        $error_msg = "Please fill in all required fields.";
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $error_msg = "Please enter a valid email address.";
+    } else {
+        // Insert into database using prepared statements to prevent SQL injection
+        $stmt = $conn->prepare("INSERT INTO contact_messages (name, email, subject_type, message) VALUES (?, ?, ?, ?)");
+        $stmt->bind_param("ssss", $name, $email, $subject_type, $message);
+
+        if ($stmt->execute()) {
+            $success_msg = "Thank you! Your message has been sent successfully. Our team will get back to you soon.";
+        } else {
+            $error_msg = "Oops! Something went wrong. Please try again later.";
+        }
+        $stmt->close();
+    }
 }
-
-$recipe_id = $_GET['id'];
-
-// 2. Fetch the recipe AND the author's name (if it was submitted by a user)
-$stmt = $conn->prepare("
-    SELECT recipes.*, users.first_name, users.last_name 
-    FROM recipes 
-    LEFT JOIN users ON recipes.user_id = users.user_id 
-    WHERE recipe_id = ?
-");
-$stmt->bind_param("i", $recipe_id);
-$stmt->execute();
-$result = $stmt->get_result();
-
-// 3. Check if the recipe actually exists in the database
-if ($result->num_rows === 0) {
-    echo "<h2 style='text-align:center; margin-top: 50px;'>Recipe not found! <a href='recipes.php'>Go back.</a></h2>";
-    exit();
-}
-
-$recipe = $result->fetch_assoc();
-$stmt->close();
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo htmlspecialchars($recipe['title']); ?> | FoodFusion</title>
+    <title>Contact Us | FoodFusion</title>
     <link rel="stylesheet" href="style.css?v=<?php echo time(); ?>">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
@@ -48,7 +47,7 @@ $stmt->close();
         <ul class="nav-links">
             <li><a href="index.php">Home</a></li>
             <li><a href="about.php">About Us</a></li>
-            <li><a href="recipes.php" style="color: var(--primary-color);">Recipes</a></li>
+            <li><a href="recipes.php">Recipes</a></li>
             <li><a href="community.php">Community</a></li>
             <li><a href="resources.php">Resources</a></li>
         </ul>
@@ -66,42 +65,61 @@ $stmt->close();
         </div>
     </nav>
 
-    <main class="single-recipe-container">
-        
-        <a href="recipes.php" class="back-link">&larr; Back to Recipes</a>
+    <header class="hero contact-hero">
+        <div class="hero-content">
+            <h1>Get In Touch</h1>
+            <p>Have a question, feedback, or a recipe request? We would love to hear from you!</p>
+        </div>
+    </header>
 
-        <div class="single-recipe-header">
-            <h1><?php echo htmlspecialchars($recipe['title']); ?></h1>
+    <section class="contact-section">
+        <div class="contact-container">
             
-            <p class="recipe-author">
-                <?php if ($recipe['user_id'] === NULL): ?>
-                    Curated by <strong>FoodFusion Experts</strong>
-                <?php else: ?>
-                    Submitted by <strong><?php echo htmlspecialchars($recipe['first_name'] . " " . $recipe['last_name']); ?></strong>
+            <div class="contact-info">
+                <h2>Contact Information</h2>
+                <p>Fill out the form, and our culinary team will get back to you within 24 hours.</p>
+                
+                <div class="info-item">
+                    <strong>📧 Email:</strong> support@foodfusion.com
+                </div>
+                <div class="info-item">
+                    <strong>📍 Location:</strong> 123 Culinary Lane, Flavor Town
+                </div>
+                <div class="info-item">
+                    <strong>⏰ Hours:</strong> Mon - Fri, 9:00 AM - 6:00 PM
+                </div>
+            </div>
+
+            <div class="contact-form-wrapper">
+                
+                <?php if (!empty($success_msg)): ?>
+                    <div class="alert alert-success"><?php echo $success_msg; ?></div>
                 <?php endif; ?>
-            </p>
+                
+                <?php if (!empty($error_msg)): ?>
+                    <div class="alert alert-error"><?php echo $error_msg; ?></div>
+                <?php endif; ?>
 
-            <div class="recipe-badges justify-center">
-                <span class="badge badge-cuisine"><?php echo htmlspecialchars($recipe['cuisine_type']); ?></span>
-                <span class="badge badge-diet"><?php echo htmlspecialchars($recipe['dietary_preference']); ?></span>
-                <span class="badge badge-difficulty <?php echo strtolower($recipe['difficulty_level']); ?>"><?php echo htmlspecialchars($recipe['difficulty_level']); ?></span>
+                <form action="contact.php" method="POST" class="custom-form">
+                    <input type="text" name="name" placeholder="Your Full Name" required>
+                    <input type="email" name="email" placeholder="Your Email Address" required>
+                    
+                    <select name="subject_type" required>
+                        <option value="" disabled selected>Select a Subject</option>
+                        <option value="Enquiry">General Enquiry</option>
+                        <option value="Recipe Request">Recipe Request</option>
+                        <option value="Feedback">Website Feedback</option>
+                    </select>
+
+                    <textarea name="message" placeholder="How can we help you today?" rows="6" required></textarea>
+                    
+                    <button type="submit" class="btn primary-btn full-width">Send Message</button>
+                </form>
             </div>
-            
-            <p class="single-recipe-desc"><?php echo htmlspecialchars($recipe['description']); ?></p>
         </div>
+    </section>
 
-        <hr class="recipe-divider">
-
-        <div class="recipe-instructions-block">
-            <h2>Instructions</h2>
-            <div class="instructions-text">
-                <?php echo nl2br(htmlspecialchars($recipe['instructions'])); ?>
-            </div>
-        </div>
-
-    </main>
-
-<?php if(!isset($_SESSION['user_id'])): // Only render the modal if they aren't logged in ?>
+    <?php if(!isset($_SESSION['user_id'])): ?>
     <div id="joinModal" class="modal">
         <div class="modal-content">
             <span class="close-btn">&times;</span>

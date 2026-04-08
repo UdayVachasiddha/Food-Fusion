@@ -1,5 +1,8 @@
 <?php
 session_start();
+require_once 'db_connect.php';
+
+// Hub page does not require a global fetch.
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -7,7 +10,7 @@ session_start();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About Us | FoodFusion</title>
+    <title>Culinary Resources | FoodFusion</title>
     <link rel="stylesheet" href="style.css?v=<?php echo time(); ?>">
     <link
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Poppins:wght@300;400;600&display=swap"
@@ -21,10 +24,10 @@ session_start();
                 src="assets/logo.png" alt="FoodFusion Logo"></a>
         <ul class="nav-links">
             <li><a href="index.php">Home</a></li>
-            <li><a href="about.php" style="color: var(--primary-color);">About Us</a></li>
+            <li><a href="about.php">About Us</a></li>
             <li><a href="recipes.php">Recipes</a></li>
             <li><a href="community.php">Community</a></li>
-            <li><a href="resources.php">Resources</a></li>
+            <li><a href="resources.php" style="color: var(--primary-color);">Resources</a></li>
         </ul>
 
         <div style="display: flex; align-items: center; gap: 10px;">
@@ -54,63 +57,59 @@ session_start();
         </div>
     </nav>
 
-    <header class="hero about-hero">
+    <header class="hero resource-hero">
         <div class="hero-content">
-            <h1>Our Story</h1>
-            <p>Bringing people together through the joy of home cooking and shared culinary experiences.</p>
+            <h1>Culinary Resources</h1>
+            <p>Expand your knowledge with our free guides, video tutorials, and educational infographics.</p>
         </div>
     </header>
 
-    <section class="about-section">
-        <h2 class="section-title">Our Culinary Philosophy</h2>
-        <div class="philosophy-content">
-            <p class="lead-text">At FoodFusion, we believe that cooking is more than just a daily chore, it is an art
-                form, a way to connect with loved ones, and a celebration of global cultures.</p>
-            <p>We are dedicated to demystifying the kitchen. Whether you are boiling water for the first time or
-                mastering complex French sauces, our mission is to make culinary creativity accessible, enjoyable, and
-                rewarding for everyone.</p>
-        </div>
-    </section>
+    <!-- Resource Hub Links -->
+    <section class="resource-collection"
+        style="padding: 6rem 20px; min-height: 50vh; display: flex; align-items: center; justify-content: center; background: var(--bg-color);">
+        <div class="card-grid"
+            style="grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 40px; width: 100%; max-width: 1000px;">
 
-    <section class="values-section">
-        <h2 class="section-title">Our Core Values</h2>
-        <div class="card-grid values-grid">
-            <div class="card value-card">
-                <h3>🤝 Community</h3>
-                <p>We foster a supportive environment where food enthusiasts can share, learn, and grow together without
-                    judgment.</p>
-            </div>
-            <div class="card value-card">
-                <h3>💡 Creativity</h3>
-                <p>We encourage stepping outside the recipe box. Substitute, experiment, and make every dish your own.
-                </p>
-            </div>
-            <div class="card value-card">
-                <h3>🌍 Sustainability</h3>
-                <p>We promote mindful consumption, reducing food waste, and embracing eco-friendly kitchen practices.
-                </p>
-            </div>
-        </div>
-    </section>
+            <a href="resources_culinary.php" style="text-decoration: none;">
+                <div class="card resource-card"
+                    style="padding: 50px 30px; text-align: center; transition: transform 0.3s, box-shadow 0.3s; border-top: 6px solid var(--primary-color);">
+                    <div class="resource-icon-wrapper"
+                        style="background: rgba(230, 57, 70, 0.1); color: var(--primary-color); width: 90px; height: 90px; font-size: 40px; margin: 0 auto 25px auto;">
+                        <span class="resource-icon">👨‍🍳</span>
+                    </div>
+                    <div class="card-content">
+                        <h3
+                            style="margin-bottom: 20px; font-size: 1.7rem; color: var(--text-dark); font-family: var(--font-heading);">
+                            Culinary Resources</h3>
+                        <p style="color: #666; line-height: 1.7; font-size: 1.05rem;">Explore downloadable recipe cards,
+                            instructional videos, and incredibly useful kitchen hacks.</p>
+                        <span
+                            style="display: inline-block; margin-top: 25px; color: var(--primary-color); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; font-size: 0.9rem;">View
+                            Collection &rarr;</span>
+                    </div>
+                </div>
+            </a>
 
-    <section class="about-section team-section">
-        <h2 class="section-title">The Team Behind FoodFusion</h2>
-        <div class="team-grid">
-            <div class="team-member">
-                <img src="Ansh.png" alt="Ansh Maurya">
-                <h3>Ansh Maurya</h3>
-                <p>Founder & Head Chef</p>
-            </div>
-            <div class="team-member">
-                <img src="Aryan.jpg" alt="Aryan Nagaonkar">
-                <h3>Aryan Nagaonkar</h3>
-                <p>Community Manager</p>
-            </div>
-            <div class="team-member">
-                <img src="Nikyaa.jpeg" alt="Nekeel Das">
-                <h3>Nekeel Das</h3>
-                <p>Recipe Curator</p>
-            </div>
+            <a href="resources_educational.php" style="text-decoration: none;">
+                <div class="card resource-card"
+                    style="padding: 50px 30px; text-align: center; transition: transform 0.3s, box-shadow 0.3s; border-top: 6px solid #2a9d8f;">
+                    <div class="resource-icon-wrapper"
+                        style="background: rgba(42, 157, 143, 0.1); color: #2a9d8f; width: 90px; height: 90px; font-size: 40px; margin: 0 auto 25px auto;">
+                        <span class="resource-icon">🌍</span>
+                    </div>
+                    <div class="card-content">
+                        <h3
+                            style="margin-bottom: 20px; font-size: 1.7rem; color: var(--text-dark); font-family: var(--font-heading);">
+                            Educational Resources</h3>
+                        <p style="color: #666; line-height: 1.7; font-size: 1.05rem;">Discover rich infographics and
+                            downloadable guides on renewable energy and sustainability.</p>
+                        <span
+                            style="display: inline-block; margin-top: 25px; color: #2a9d8f; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; font-size: 0.9rem;">View
+                            Collection &rarr;</span>
+                    </div>
+                </div>
+            </a>
+
         </div>
     </section>
 
@@ -124,7 +123,6 @@ session_start();
                 <a href="terms.php">Terms of Service</a>
                 <a href="contact.php">Contact Us</a>
             </div>
-
             <div class="social-links">
                 <a href="https://facebook.com" target="_blank" class="social-item" aria-label="Facebook">
                     <span class="social-name">Facebook</span>
@@ -133,6 +131,7 @@ session_start();
                         <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
                     </svg>
                 </a>
+
                 <a href="https://instagram.com" target="_blank" class="social-item" aria-label="Instagram">
                     <span class="social-name">Instagram</span>
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -142,6 +141,7 @@ session_start();
                         <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
                     </svg>
                 </a>
+
                 <a href="https://twitter.com" target="_blank" class="social-item" aria-label="Twitter">
                     <span class="social-name">Twitter</span>
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -158,7 +158,7 @@ session_start();
         </div>
     </footer>
 
-    <?php if (!isset($_SESSION['user_id'])): // Only render the modal if they aren't logged in ?>
+    <?php if (!isset($_SESSION['user_id'])): ?>
         <div id="joinModal" class="modal">
             <div class="modal-content">
                 <span class="close-btn">&times;</span>

@@ -1,54 +1,23 @@
 <?php
 session_start();
-require_once 'db_connect.php';
-
-// 1. Check if an ID was passed in the URL and if it's a valid number
-if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
-    // If someone tries to just type view_recipe.php with no ID, kick them back
-    header("Location: recipes.php");
-    exit();
-}
-
-$recipe_id = $_GET['id'];
-
-// 2. Fetch the recipe AND the author's name (if it was submitted by a user)
-$stmt = $conn->prepare("
-    SELECT recipes.*, users.first_name, users.last_name 
-    FROM recipes 
-    LEFT JOIN users ON recipes.user_id = users.user_id 
-    WHERE recipe_id = ?
-");
-$stmt->bind_param("i", $recipe_id);
-$stmt->execute();
-$result = $stmt->get_result();
-
-// 3. Check if the recipe actually exists in the database
-if ($result->num_rows === 0) {
-    echo "<h2 style='text-align:center; margin-top: 50px;'>Recipe not found! <a href='recipes.php'>Go back.</a></h2>";
-    exit();
-}
-
-$recipe = $result->fetch_assoc();
-$stmt->close();
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo htmlspecialchars($recipe['title']); ?> | FoodFusion</title>
+    <title>Terms of Service | FoodFusion</title>
     <link rel="stylesheet" href="style.css?v=<?php echo time(); ?>">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 <body>
 
     <nav class="navbar">
-        <a href="index.php" class="logo" style="display: flex; align-items: center; text-decoration: none;"><img src="assets/logo.png" alt="FoodFusion Logo"></a>
+        <a href="index.php" class="logo"><img src="assets/logo.png" alt="FoodFusion Logo"></a>
         <ul class="nav-links">
             <li><a href="index.php">Home</a></li>
             <li><a href="about.php">About Us</a></li>
-            <li><a href="recipes.php" style="color: var(--primary-color);">Recipes</a></li>
+            <li><a href="recipes.php">Recipes</a></li>
             <li><a href="community.php">Community</a></li>
             <li><a href="resources.php">Resources</a></li>
         </ul>
@@ -66,42 +35,51 @@ $stmt->close();
         </div>
     </nav>
 
-    <main class="single-recipe-container">
-        
-        <a href="recipes.php" class="back-link">&larr; Back to Recipes</a>
-
-        <div class="single-recipe-header">
-            <h1><?php echo htmlspecialchars($recipe['title']); ?></h1>
-            
-            <p class="recipe-author">
-                <?php if ($recipe['user_id'] === NULL): ?>
-                    Curated by <strong>FoodFusion Experts</strong>
-                <?php else: ?>
-                    Submitted by <strong><?php echo htmlspecialchars($recipe['first_name'] . " " . $recipe['last_name']); ?></strong>
-                <?php endif; ?>
-            </p>
-
-            <div class="recipe-badges justify-center">
-                <span class="badge badge-cuisine"><?php echo htmlspecialchars($recipe['cuisine_type']); ?></span>
-                <span class="badge badge-diet"><?php echo htmlspecialchars($recipe['dietary_preference']); ?></span>
-                <span class="badge badge-difficulty <?php echo strtolower($recipe['difficulty_level']); ?>"><?php echo htmlspecialchars($recipe['difficulty_level']); ?></span>
-            </div>
-            
-            <p class="single-recipe-desc"><?php echo htmlspecialchars($recipe['description']); ?></p>
+    <header class="hero" style="height: 25vh; background: linear-gradient(rgba(29, 53, 87, 0.9), rgba(29, 53, 87, 0.9));">
+        <div class="hero-content">
+            <h1 style="font-size: 2.5rem;">Terms of Service</h1>
         </div>
+    </header>
 
-        <hr class="recipe-divider">
+    <main class="policy-container">
+        <p class="last-updated"><strong>Last Updated:</strong> <?php echo date("F j, Y"); ?></p>
 
-        <div class="recipe-instructions-block">
-            <h2>Instructions</h2>
-            <div class="instructions-text">
-                <?php echo nl2br(htmlspecialchars($recipe['instructions'])); ?>
-            </div>
-        </div>
+        <section class="policy-section">
+            <h2>1. Acceptance of Terms</h2>
+            <p>By accessing and using FoodFusion (the "Service"), you accept and agree to be bound by the terms and provision of this agreement. In addition, when using these particular services, you shall be subject to any posted guidelines or rules applicable to such services.</p>
+        </section>
 
+        <section class="policy-section">
+            <h2>2. User Accounts & Security</h2>
+            <p>To access certain features of the Service, such as the Community Cookbook, you must register for an account. You are responsible for maintaining the confidentiality of your account credentials. FoodFusion utilizes secure cryptographic hashing for passwords, but you agree to accept responsibility for all activities that occur under your account.</p>
+        </section>
+
+        <section class="policy-section">
+            <h2>3. Community Submissions</h2>
+            <p>By submitting recipes, comments, or other content to FoodFusion, you grant us a non-exclusive, royalty-free, perpetual, and worldwide license to use, modify, publicly perform, publicly display, reproduce, and distribute such content on and through the Service.</p>
+            <ul>
+                <li>You must own the rights to the content you post.</li>
+                <li>Content must not be illegal, offensive, or violate intellectual property rights.</li>
+            </ul>
+        </section>
+
+        <section class="policy-section">
+            <h2>4. Prohibited Conduct</h2>
+            <p>You agree not to engage in any of the following prohibited activities:</p>
+            <ul>
+                <li>Attempting to interfere with, compromise the system integrity, or decipher any transmissions to or from the servers running FoodFusion (e.g., SQL Injection, XSS attacks).</li>
+                <li>Impersonating another person or otherwise misrepresenting your affiliation with a person or entity.</li>
+                <li>Using the Service for any commercial solicitation purposes.</li>
+            </ul>
+        </section>
+
+        <section class="policy-section">
+            <h2>5. Termination</h2>
+            <p>We may terminate or suspend your account and bar access to the Service immediately, without prior notice or liability, under our sole discretion, for any reason whatsoever and without limitation, including but not limited to a breach of the Terms.</p>
+        </section>
     </main>
 
-<?php if(!isset($_SESSION['user_id'])): // Only render the modal if they aren't logged in ?>
+    <?php if(!isset($_SESSION['user_id'])): ?>
     <div id="joinModal" class="modal">
         <div class="modal-content">
             <span class="close-btn">&times;</span>
@@ -120,9 +98,6 @@ $stmt->close();
                     </button>
                 </div>
                 <button type="submit" class="btn primary-btn full-width">Sign Up</button>
-                <p style="margin-top: 15px; font-size: 0.9em; text-align: center;">
-                    Already have an account? <a href="login.php" style="color: var(--primary-color);">Log in here</a>.
-                </p>
             </form>
         </div>
     </div>
