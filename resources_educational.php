@@ -166,11 +166,17 @@ require_once 'db_connect.php';
             <div style="padding:18px 20px 20px; flex:1; display:flex; flex-direction:column;">
                 <h3 style="font-size:1.05rem; font-family:var(--font-heading); color:var(--text-primary); margin-bottom:8px; line-height:1.4;"><?php echo $t; ?></h3>
                 <?php if(!empty($short)): ?><p style="font-size:0.87rem; color:var(--text-secondary); line-height:1.5; margin-bottom:15px; flex:1;"><?php echo $short; ?></p><?php endif; ?>
-                <button onclick="openResourceViewer('video','<?php echo addslashes($link_raw); ?>','<?php echo $t_js; ?>')"
-                        style="background:none;border:none;padding:0;cursor:pointer;display:inline-flex;align-items:center;gap:6px;color:#264653;font-size:0.85rem;font-weight:600;margin-top:auto;font-family:var(--font-body);">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                    Watch Now
-                </button>
+                <div style="display:flex; align-items:center; gap:15px; margin-top:auto;">
+                    <button onclick="openResourceViewer('video','<?php echo addslashes($link_raw); ?>','<?php echo $t_js; ?>')"
+                            style="background:none;border:none;padding:0;cursor:pointer;display:inline-flex;align-items:center;gap:6px;color:#264653;font-size:0.85rem;font-weight:600;font-family:var(--font-body);">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                        Watch Now
+                    </button>
+                    <a href="<?php echo $link; ?>" download="<?php echo $t; ?>" style="text-decoration:none; display:inline-flex; align-items:center; gap:6px; color:#e63946; font-size:0.85rem; font-weight:600; font-family:var(--font-body);">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                        Download
+                    </a>
+                </div>
             </div>
         </div>
         <?php endwhile; ?>
@@ -187,27 +193,52 @@ require_once 'db_connect.php';
                 <h3 id="viewerTitle" style="font-family:var(--font-heading); color:var(--text-primary); margin:0; font-size:1.2rem;"></h3>
                 <button onclick="closeResourceViewer()" style="background:none;border:none;cursor:pointer;color:var(--text-secondary);font-size:1.8rem;line-height:1;padding:0;">&times;</button>
             </div>
-            <div style="flex:1; overflow:auto;"><iframe id="resourceViewerFrame" src="" style="width:100%;height:75vh;border:none;display:block;"></iframe></div>
+            <div id="viewerContent" style="flex:1; overflow:auto;">
+                <iframe id="resourceViewerFrame" src="" style="width:100%;height:75vh;border:none;display:none;"></iframe>
+                <video id="resourceVideoPlayer" controls style="width:100%;max-height:75vh;display:none;background:#000;"></video>
+            </div>
         </div>
     </div>
     <script>
         function openResourceViewer(type, link, title) {
             document.getElementById('viewerTitle').textContent = title;
-            let url = link;
+            const iframe = document.getElementById('resourceViewerFrame');
+            const video = document.getElementById('resourceVideoPlayer');
+            
+            iframe.style.display = 'none';
+            iframe.src = '';
+            video.style.display = 'none';
+            video.src = '';
+
             if (type === 'video') {
-                try {
-                    const u = new URL(link);
-                    let id = u.searchParams.get('v');
-                    if (!id && u.hostname === 'youtu.be') id = u.pathname.slice(1);
-                    if (id) url = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
-                } catch(e) {}
+                const isYouTube = link.includes('youtube.com') || link.includes('youtu.be');
+                if (isYouTube) {
+                    let url = link;
+                    try {
+                        const u = new URL(link);
+                        let id = u.searchParams.get('v');
+                        if (!id && u.hostname === 'youtu.be') id = u.pathname.slice(1);
+                        if (id) url = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+                    } catch(e) {}
+                    iframe.src = url;
+                    iframe.style.display = 'block';
+                } else {
+                    video.src = link;
+                    video.style.display = 'block';
+                    video.play();
+                }
+            } else {
+                iframe.src = link;
+                iframe.style.display = 'block';
             }
-            document.getElementById('resourceViewerFrame').src = url;
+            
             document.getElementById('resourceViewerModal').style.display = 'flex';
             document.body.style.overflow = 'hidden';
         }
         function closeResourceViewer() {
             document.getElementById('resourceViewerFrame').src = '';
+            document.getElementById('resourceVideoPlayer').pause();
+            document.getElementById('resourceVideoPlayer').src = '';
             document.getElementById('resourceViewerModal').style.display = 'none';
             document.body.style.overflow = '';
         }
@@ -256,12 +287,14 @@ require_once 'db_connect.php';
                 <input type="hidden" name="description" value="Resource">
                 <select name="type" id="resourceTypeSelect_edu" onchange="toggleEduInput()" required style="width:100%; margin-bottom:12px; padding:12px; border-radius:8px; border:1px solid #ccc; background:white; box-sizing:border-box;">
                     <option value="" disabled selected>Select Resource Type</option>
-                    <option value="video">🎬 Video Tutorial (YouTube link)</option>
+                    <option value="video">🎬 Video (YouTube link or File upload)</option>
                     <option value="pdf">📄 PDF Document Upload</option>
                 </select>
                 <div id="eduVideoContainer" style="display:none; margin-bottom:12px;">
-                    <input type="url" name="resource_url" id="eduResourceUrl" placeholder="YouTube URL (e.g. https://youtube.com/watch?v=...)" style="width:100%; padding:12px; border-radius:8px; border:1px solid #ccc; box-sizing:border-box; margin-bottom:10px;">
-                    <input type="url" name="thumbnail_url" id="eduThumbUrl" placeholder="Custom Thumbnail URL (optional – auto-extracted from YouTube if blank)" style="width:100%; padding:12px; border-radius:8px; border:1px solid #ccc; box-sizing:border-box;">
+                    <input type="url" name="resource_url" id="eduResourceUrl" placeholder="YouTube URL (optional if uploading file)" style="width:100%; padding:12px; border-radius:8px; border:1px solid #ccc; box-sizing:border-box; margin-bottom:10px;">
+                    <label style="display:block; margin-bottom:6px; color:#555; font-weight:500;">Or Upload Video File:</label>
+                    <input type="file" name="resource_file" id="eduResourceFileVideo" accept="video/mp4,video/webm,video/ogg,video/quicktime" style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc; background:#f9f9f9; box-sizing:border-box; margin-bottom:10px;">
+                    <input type="url" name="thumbnail_url" id="eduThumbUrl" placeholder="Custom Thumbnail URL (optional)" style="width:100%; padding:12px; border-radius:8px; border:1px solid #ccc; box-sizing:border-box;">
                 </div>
                 <div id="eduPdfContainer" style="display:none; margin-bottom:12px;">
                     <label style="display:block; margin-bottom:6px; color:#555; font-weight:500;">Select PDF File:</label>
@@ -277,13 +310,19 @@ require_once 'db_connect.php';
             const vC = document.getElementById('eduVideoContainer');
             const pC = document.getElementById('eduPdfContainer');
             const vUrl = document.getElementById('eduResourceUrl');
-            const pFile = document.getElementById('eduResourceFile');
+            const pFileV = document.getElementById('eduResourceFileVideo');
+            const pFileP = document.getElementById('eduResourceFile');
+            
             if (type === 'video') {
-                vC.style.display = 'block'; vUrl.required = true;
-                pC.style.display = 'none';  pFile.required = false; pFile.value = '';
+                vC.style.display = 'block';
+                pC.style.display = 'none';
+                pFileP.required = false; pFileP.value = '';
+                // Logic: either URL or File should be provided
             } else {
-                pC.style.display = 'block'; pFile.required = true;
-                vC.style.display = 'none';  vUrl.required = false;
+                pC.style.display = 'block';
+                pFileP.required = true;
+                vC.style.display = 'none';
+                vUrl.value = ''; pFileV.value = '';
             }
         }
     </script>

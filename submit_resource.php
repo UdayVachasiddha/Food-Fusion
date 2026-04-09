@@ -58,13 +58,38 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $thumbnail_url = $conn->real_escape_string(trim($_POST['thumbnail_url'] ?? ''));
 
     } elseif ($type === 'video') {
-        // Handle Video URL
-        $url = filter_var($_POST['resource_url'], FILTER_SANITIZE_URL);
-        if (filter_var($url, FILTER_VALIDATE_URL)) {
-            $file_path_or_url = $conn->real_escape_string($url);
+        // Handle Video (File Upload or URL)
+        if (isset($_FILES['resource_file']) && $_FILES['resource_file']['error'] == 0) {
+            $upload_dir = 'downloads/';
+            if (!is_dir($upload_dir)) mkdir($upload_dir, 0777, true);
+
+            $file_name   = preg_replace("/[^a-zA-Z0-9.-]/", "_", basename($_FILES["resource_file"]["name"]));
+            $target_file = $upload_dir . time() . "_" . $file_name;
+
+            // Simple extension check
+            $ext = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+            $allowed = ['mp4', 'webm', 'ogg', 'mov'];
+            
+            if (in_array($ext, $allowed)) {
+                if (move_uploaded_file($_FILES["resource_file"]["tmp_name"], $target_file)) {
+                    $file_path_or_url = $target_file;
+                } else {
+                    header("Location: $return_url?error=" . urlencode("Server failed to save the uploaded video file."));
+                    exit;
+                }
+            } else {
+                header("Location: $return_url?error=" . urlencode("Invalid video file format. Allowed: .mp4, .webm, .ogg, .mov"));
+                exit;
+            }
         } else {
-            header("Location: $return_url?error=" . urlencode("A valid video URL (YouTube, Vimeo, etc.) is required."));
-            exit;
+            // Fallback to URL
+            $url = filter_var($_POST['resource_url'], FILTER_SANITIZE_URL);
+            if (filter_var($url, FILTER_VALIDATE_URL)) {
+                $file_path_or_url = $conn->real_escape_string($url);
+            } else {
+                header("Location: $return_url?error=" . urlencode("A valid video URL or file is required."));
+                exit;
+            }
         }
 
         // Video thumbnail: user-provided URL, or auto-extract from YouTube if blank
