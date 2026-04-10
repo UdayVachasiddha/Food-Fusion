@@ -293,12 +293,12 @@ require_once 'db_connect.php';
                 <div id="culVideoContainer" style="display:none; margin-bottom:12px;">
                     <input type="url" name="resource_url" id="culResourceUrl" placeholder="YouTube URL (optional if uploading file)" style="width:100%; padding:12px; border-radius:8px; border:1px solid #ccc; box-sizing:border-box; margin-bottom:10px;">
                     <label style="display:block; margin-bottom:6px; color:#555; font-weight:500;">Or Upload Video File:</label>
-                    <input type="file" name="resource_file" id="culResourceFileVideo" accept="video/mp4,video/webm,video/ogg,video/quicktime" style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc; background:#f9f9f9; box-sizing:border-box; margin-bottom:10px;">
+                    <input type="file" name="video_file" id="culResourceFileVideo" accept="video/mp4,video/webm,video/ogg,video/quicktime" style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc; background:#f9f9f9; box-sizing:border-box; margin-bottom:10px;">
                     <input type="url" name="thumbnail_url" id="culThumbUrl" placeholder="Custom Thumbnail URL (optional)" style="width:100%; padding:12px; border-radius:8px; border:1px solid #ccc; box-sizing:border-box;">
                 </div>
                 <div id="culPdfContainer" style="display:none; margin-bottom:12px;">
                     <label style="display:block; margin-bottom:6px; color:#555; font-weight:500;">Select PDF File:</label>
-                    <input type="file" name="resource_file" id="culResourceFile" accept="application/pdf" style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc; background:#f9f9f9; box-sizing:border-box;">
+                    <input type="file" name="pdf_file" id="culResourceFile" accept="application/pdf" style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc; background:#f9f9f9; box-sizing:border-box;">
                 </div>
                 <button type="submit" class="btn primary-btn full-width" style="border-radius:30px; font-weight:600; padding:14px; margin-top:5px;">Upload Resource</button>
             </form>

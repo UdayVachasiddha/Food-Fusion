@@ -36,14 +36,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($type === 'pdf') {
         // Handle PDF file upload
-        if (isset($_FILES['resource_file']) && $_FILES['resource_file']['error'] == 0) {
+        if (isset($_FILES['pdf_file']) && $_FILES['pdf_file']['error'] == 0) {
             $upload_dir = 'downloads/';
             if (!is_dir($upload_dir)) mkdir($upload_dir, 0777, true);
 
-            $file_name   = preg_replace("/[^a-zA-Z0-9.-]/", "_", basename($_FILES["resource_file"]["name"]));
+            $file_name   = preg_replace("/[^a-zA-Z0-9.-]/", "_", basename($_FILES["pdf_file"]["name"]));
             $target_file = $upload_dir . time() . "_" . $file_name;
 
-            if (move_uploaded_file($_FILES["resource_file"]["tmp_name"], $target_file)) {
+            if (move_uploaded_file($_FILES["pdf_file"]["tmp_name"], $target_file)) {
                 $file_path_or_url = $target_file;
             } else {
                 header("Location: $return_url?error=" . urlencode("Server failed to save the uploaded PDF file."));
@@ -59,11 +59,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     } elseif ($type === 'video') {
         // Handle Video (File Upload or URL)
-        if (isset($_FILES['resource_file']) && $_FILES['resource_file']['error'] == 0) {
+        if (isset($_FILES['video_file']) && $_FILES['video_file']['error'] == 0) {
             $upload_dir = 'downloads/';
             if (!is_dir($upload_dir)) mkdir($upload_dir, 0777, true);
 
-            $file_name   = preg_replace("/[^a-zA-Z0-9.-]/", "_", basename($_FILES["resource_file"]["name"]));
+            $file_name   = preg_replace("/[^a-zA-Z0-9.-]/", "_", basename($_FILES["video_file"]["name"]));
             $target_file = $upload_dir . time() . "_" . $file_name;
 
             // Simple extension check
@@ -71,7 +71,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $allowed = ['mp4', 'webm', 'ogg', 'mov'];
             
             if (in_array($ext, $allowed)) {
-                if (move_uploaded_file($_FILES["resource_file"]["tmp_name"], $target_file)) {
+                if (move_uploaded_file($_FILES["video_file"]["tmp_name"], $target_file)) {
                     $file_path_or_url = $target_file;
                 } else {
                     header("Location: $return_url?error=" . urlencode("Server failed to save the uploaded video file."));
