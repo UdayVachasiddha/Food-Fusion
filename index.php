@@ -32,15 +32,31 @@ $featured_result = $conn->query($featured_query);
             <li><a href="resources.php">Resources</a></li>
         </ul>
 
-        <?php
-        // Dynamic Button: Check if the user is already logged in
-        if (isset($_SESSION['user_id'])):
-            ?>
-            <a href="logout.php" class="btn outline-btn">Logout</a>
-        <?php else: ?>
-            <button id="openModalBtn" class="btn primary-btn">Join Us</button>
-        <?php endif; ?>
-
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <button id="theme-toggle" class="theme-switch" aria-label="Toggle Dark Mode">
+                <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+                <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                </svg>
+            </button>
+            <?php if (isset($_SESSION['user_id'])): ?>
+                <a href="logout.php" class="btn outline-btn">Logout</a>
+            <?php else: ?>
+                <button id="openModalBtn" class="btn primary-btn">Join Us</button>
+            <?php endif; ?>
+        </div>
     </nav>
 
     <header class="hero">
@@ -135,8 +151,7 @@ $featured_result = $conn->query($featured_query);
                     // Truncate instructions
                     $snippet = htmlspecialchars(substr($row['instructions'], 0, 90)) . '...';
                     ?>
-                    <div class="card"
-                        style="border-radius: 8px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); background: #fff;">
+                    <div class="card">
                         <img src="<?php echo $image; ?>" alt="<?php echo htmlspecialchars($row['title']); ?>"
                             style="width: 100%; height: 200px; object-fit: cover;">
 

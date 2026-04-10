@@ -19,8 +19,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (empty($email) || empty($password)) {
         $error_msg = "Please enter both email and password.";
     } else {
-        // Fetch user data, including a check if they are currently locked out based on server time
-        $stmt = $conn->prepare("SELECT user_id, password_hash, failed_attempts, lockout_until, (lockout_until > NOW()) AS is_locked FROM users WHERE email = ?");
+        // Fetch user data, including a check if they are currently locked out based on database time
+        $stmt = $conn->prepare("SELECT user_id, password_hash, failed_attempts, lockout_until, 
+                                (lockout_until > NOW()) AS is_locked,
+                                TIMESTAMPDIFF(SECOND, NOW(), lockout_until) AS seconds_left 
+                                FROM users WHERE email = ?");
         $stmt->bind_param("s", $email);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -30,11 +33,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             // 1. Check if the user is currently locked out
             if ($user['is_locked']) {
-                // Calculate how many minutes/seconds are left using PHP
-                $lockout_time = strtotime($user['lockout_until']);
-                $current_time = time();
-                $diff_seconds = $lockout_time - $current_time;
-                $minutes_left = ceil($diff_seconds / 60);
+                // We use seconds_left from MySQL to avoid PHP/Database timezone mismatches
+                $minutes_left = ceil($user['seconds_left'] / 60);
+                if ($minutes_left < 1)
+                    $minutes_left = 1;
 
                 $error_msg = "Account locked due to too many failed attempts. Please try again in {$minutes_left} minute(s).";
             } else {
@@ -164,11 +166,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <h2>Welcome Back</h2>
 
             <?php if (!empty($success_msg)): ?>
-                <div class="alert alert-success"><?php echo htmlspecialchars($success_msg); ?></div>
+                <div class="alert alert-success">
+                    <?php echo htmlspecialchars($success_msg); ?>
+                </div>
             <?php endif; ?>
 
             <?php if (!empty($error_msg)): ?>
-                <div class="alert alert-error"><?php echo htmlspecialchars($error_msg); ?></div>
+                <div class="alert alert-error">
+                    <?php echo htmlspecialchars($error_msg); ?>
+                </div>
             <?php endif; ?>
 
             <form action="login.php" method="POST">

@@ -19,6 +19,33 @@ function togglePasswordVisibility(inputId, btnElement) {
 
 // 2. Modal and Cookie Logic
 document.addEventListener('DOMContentLoaded', () => {
+    // --- Theme Management Logic ---
+    const htmlElement = document.documentElement;
+    const themeToggle = document.getElementById('theme-toggle');
+    
+    // 1. Initial State: Load from LocalStorage or System Preference
+    const savedTheme = localStorage.getItem('theme');
+    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    
+    // Choose the best theme to start with
+    const initialTheme = savedTheme || (systemPrefersDark ? 'dark' : 'light');
+    htmlElement.setAttribute('data-theme', initialTheme);
+
+    if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = htmlElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            htmlElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            
+            // Add a subtle rotation animation for better feel
+            themeToggle.style.transition = 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+            themeToggle.style.transform = 'rotate(360deg)';
+            setTimeout(() => { themeToggle.style.transform = 'rotate(0deg)'; }, 500);
+        });
+    }
+
     startCarousel();
     initializeTimers();
     const modal = document.getElementById('joinModal');
@@ -68,6 +95,34 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 3000); // 3 seconds after loading
         }
     }
+
+    // --- Mobile Navbar (Hamburger Toggle) ---
+    const navSlide = () => {
+        const hamburger = document.querySelector('.hamburger');
+        const nav = document.querySelector('.nav-links');
+        const navLinks = document.querySelectorAll('.nav-links li');
+
+        if (hamburger && nav) {
+            hamburger.addEventListener('click', () => {
+                // Toggle Nav
+                nav.classList.toggle('nav-active');
+
+                // Animate Links
+                navLinks.forEach((link, index) => {
+                    if (link.style.animation) {
+                        link.style.animation = '';
+                    } else {
+                        link.style.animation = `navLinkFade 0.5s ease forwards ${index / 7 + 0.3}s`;
+                    }
+                });
+
+                // Hamburger Animation
+                hamburger.classList.toggle('toggle');
+            });
+        }
+    };
+
+    navSlide();
 });
 
 // --- Success & Error Modal Handling ---
