@@ -40,6 +40,14 @@
     background-color: var(--bg-base);
 }
 
+/* --- Dark Mode Logo Enhancement --- */
+[data-theme="dark"] .logo img {
+    mix-blend-mode: screen;
+    /* Burns out the dark background */
+    filter: contrast(3) invert(1) hue-rotate(180deg) brightness(1.1);
+    /* High contrast burns pixels to pure white/black for a perfect screen blend */
+}
+
 /* --- Base Reset --- */
 * {
     margin: 0;
