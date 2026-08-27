@@ -262,10 +262,4 @@ Food-Fusion/
 
 ---
 
-## 👤 Contributors
 
-- **Ansh**
-- **Aryan**
-- **Nikyaa**
-
-*Developed for Back End Web Development.*
